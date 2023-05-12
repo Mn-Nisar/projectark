@@ -1,0 +1,293 @@
+{% extends 'proteome/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins" , sans-serif;
+}
+
+.containers{
+  width: 85%;
+  background: #fff;
+  border-radius: 6px;
+  padding: 20px 60px 30px 40px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+.containers .content{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.containers .content .left-side{
+  width: 25%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* margin-top: 15px; */
+  position: relative;
+}
+.content .left-side::before{
+  content: '';
+  position: absolute;
+  height: 70%;
+  width: 2px;
+  right: -15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #afafb6;
+}
+.content .left-side .details{
+  margin: 14px;
+  text-align: center;
+}
+.content .left-side .details i{
+  font-size: 30px;
+  color: #3e2093;
+  margin-bottom: 10px;
+}
+.content .left-side .details .topic{
+  font-size: 18px;
+  font-weight: 500;
+}
+.content .left-side .details .text-one,
+.content .left-side .details .text-two{
+  font-size: 13.6px;
+  color: #afafb6;
+}
+.containers .content .right-side{
+  width: 75%;
+  margin-left: 75px;
+}
+.content .right-side .topic-text{
+  font-size: 23px;
+  font-weight: 600;
+  color: #3e2093;
+}
+.right-side .input-box{
+  height: 50px;
+  width: 100%;
+  margin: 12px 0;
+}
+.right-side .input-box input,
+.right-side .input-box textarea{
+  height: 100%;
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  background: #F0F1F8;
+  border-radius: 6px;
+  padding: 0 15px;
+  resize: none;
+}
+.right-side .message-box{
+  min-height: 110px;
+}
+.right-side .input-box textarea{
+  padding-top: 6px;
+}
+.right-side .button{
+  display: inline-block;
+  margin-top: 12px;
+}
+.right-side .button input[type="button"]{
+  color: #fff;
+  font-size: 18px;
+  outline: none;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  background: #3e2093;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.button input[type="button"]:hover{
+  background: #5029bc;
+}
+
+@media (max-width: 950px) {
+  .containers{
+    width: 90%;
+    padding: 30px 40px 40px 35px ;
+  }
+  .containers .content .right-side{
+   width: 75%;
+   margin-left: 55px;
+}
+}
+@media (max-width: 820px) {
+  .containers{
+    margin: 40px 0;
+    height: 100%;
+  }
+  .containers .content{
+    flex-direction: column-reverse;
+  }
+ .containers .content .left-side{
+   width: 100%;
+   flex-direction: row;
+   margin-top: 40px;
+   justify-content: center;
+   flex-wrap: wrap;
+ }
+ .containers .content .left-side::before{
+   display: none;
+ }
+ .containers .content .right-side{
+   width: 100%;
+   margin-left: 0;
+ }
+}
+
+
+.item .item-content {
+    padding: 30px 35px;
+}
+.image-upload {
+    width: 100%;
+    /* height: 300px; */
+    border: 1px dashed #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    position: relative;
+    text-align: center;
+    background: #f8f8f9;
+    color: #666;
+    overflow: hidden;
+}
+
+
+.item-wrapper form img {
+    margin-bottom: 20px;
+    width: auto;
+    height: auto;
+    max-height: 400px;
+    width: auto;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+
+.image-upload img {
+    height: 100%!important;
+    width: auto!important;
+    border-radius: 0px;
+    margin: 0 auto;
+}
+
+.image-upload i {
+    font-size: 6em;
+    color: #ccc;
+}
+
+
+.image-upload input {
+    cursor: pointer;
+    opacity: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 10;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+</style>
+<div class="mt-5 container d-flex justify-content-center">
+<div class="m-5 containers">
+    <div class="content">
+      <div class="left-side">
+        <div class="address details">
+            <!-- <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="#3e2093" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+                <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+              </svg> -->
+          <!-- <div class="topic">Address</div>
+          <div class="text-one">4th floor,Yenepoya Ayurveda </div>
+          <div class="text-two">Medical College and Hospital </div><div class="text-two"> Manjanady, Mangalore</div> -->
+          <img src="{% static 'proteome/logo/protlogo.png' %}" alt="" style="width: 100%; height: 100%;">
+        </div>
+        <div class="email details">
+            <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="#3e2093" class="bi bi-envelope-at" viewBox="0 0 16 16">
+                <path d="M2 2a2 2 0 0 0-2 2v8.01A2 2 0 0 0 2 14h5.5a.5.5 0 0 0 0-1H2a1 1 0 0 1-.966-.741l5.64-3.471L8 9.583l7-4.2V8.5a.5.5 0 0 0 1 0V4a2 2 0 0 0-2-2H2Zm3.708 6.208L1 11.105V5.383l4.708 2.825ZM1 4.217V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v.217l-7 4.2-7-4.2Z"/>
+                <path d="M14.247 14.269c1.01 0 1.587-.857 1.587-2.025v-.21C15.834 10.43 14.64 9 12.52 9h-.035C10.42 9 9 10.36 9 12.432v.214C9 14.82 10.438 16 12.358 16h.044c.594 0 1.018-.074 1.237-.175v-.73c-.245.11-.673.18-1.18.18h-.044c-1.334 0-2.571-.788-2.571-2.655v-.157c0-1.657 1.058-2.724 2.64-2.724h.04c1.535 0 2.484 1.05 2.484 2.326v.118c0 .975-.324 1.39-.639 1.39-.232 0-.41-.148-.41-.42v-2.19h-.906v.569h-.03c-.084-.298-.368-.63-.954-.63-.778 0-1.259.555-1.259 1.4v.528c0 .892.49 1.434 1.26 1.434.471 0 .896-.227 1.014-.643h.043c.118.42.617.648 1.12.648Zm-2.453-1.588v-.227c0-.546.227-.791.573-.791.297 0 .572.192.572.708v.367c0 .573-.253.744-.564.744-.354 0-.581-.215-.581-.8Z"/>
+              </svg>
+          <div class="topic">Email</div>
+          <div class="text-one">ciods@yenepoya.edu.in</div>
+          <div class="text-two">info.ciods@gmail.com</div>
+        </div>
+        <div class="phone details">
+            <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="#3e2093" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
+                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+              </svg>
+          <div class="topic">GitHub</div>
+          <div class="text-one">www.github.com</div>
+          <div class="text-two"></div>
+        </div>
+      </div>
+      <div class="right-side">
+        <div class="topic-text">Send us a message</div>
+        <p>If you have any queries related to ProteoArk, you can send us a message from here, and we will get back to you at the earliest.</p>
+      <form action="#">
+        <div class="input-box">
+          <input type="text" placeholder="Enter your name">
+        </div>
+        <div class="input-box">
+          <input type="text" placeholder="Enter your email">
+        </div>
+        <div class="item-inner">
+            <div class="item-content">
+          
+
+
+                <div class="image-upload">
+                  <label style="cursor: pointer;" for="file_upload">
+
+                    <img src="" alt="" class="uploaded-image">
+
+                    <div class="h-100">
+                           <div class="dplay-tbl">
+                            <div class="dplay-tbl-cell">
+                                <h5><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-cloud-upload" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M4.406 1.342A5.53 5.53 0 0 1 8 0c2.69 0 4.923 2 5.166 4.579C14.758 4.804 16 6.137 16 7.773 16 9.569 14.502 11 12.687 11H10a.5.5 0 0 1 0-1h2.688C13.979 10 15 8.988 15 7.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 2.825 10.328 1 8 1a4.53 4.53 0 0 0-2.941 1.1c-.757.652-1.153 1.438-1.153 2.055v.448l-.445.049C2.064 4.805 1 5.952 1 7.318 1 8.785 2.23 10 3.781 10H6a.5.5 0 0 1 0 1H3.781C1.708 11 0 9.366 0 7.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383z"/>
+                                    <path fill-rule="evenodd" d="M7.646 4.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V14.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3z"/>
+                                  </svg><b>       Choose Your Image/Zip file to Upload</b></h5>
+                                <h6 class="mt-10 mb-70">Or Drop Your Image Here</h6>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <input data-required="image" type="file" name="image_name" id="file_upload" class="image-input" data-traget-resolution="image_resolution" value="">
+                    
+                     </label>
+                </div>   
+            </div>
+        </div>
+        <div class="input-box message-box">
+            <input type="text-area" placeholder="Type your comments">
+        </div>
+       
+        <div class="button">
+          <input type="button" value="Send Now" >
+        </div>
+      </form>
+    </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+  {% endblock %}

@@ -1,0 +1,505 @@
+{% extends 'proteome/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style type="text/css">
+main{
+  margin-left: 3rem;
+  padding: 2rem;
+}
+.maker{
+    justify-content: center;
+    /* margin-left: 10em; */
+}.mycls{
+    margin-left: 4em;
+    
+}
+
+/* need this color #6d5dfc */
+
+.row {
+    display: table;
+}
+
+[class*="col-"] {
+    float: none;
+    display: table-cell;
+    vertical-align: top;
+}
+
+.radiobtn {
+    position: relative;
+    display: block;
+}
+
+.radiobtn label {
+    display: block;
+    background: rgba(0, 0, 0, 0.2);
+    color: #000;
+    border-radius: 5px;
+    padding: 10px 20px;
+    border: 2px solid rgb(194, 194, 194);
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
+.radiobtn label:after, .radiobtn label:before {
+    content: "";
+    position: absolute;
+    right: 11px;
+    top: 11px;
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    background:rgb(194, 194, 194);
+}
+
+.radiobtn label:before {
+    background: transparent;
+    transition: 0.1s width cubic-bezier(0.075, 0.82, 0.165, 1) 0s, 0.3s height cubic-bezier(0.075, 0.82, 0.165, 2) 0.1s;
+    z-index: 2;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    background-size: 13px;
+    background-position: center;
+    width: 0;
+    height: 0;
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNS4zIDEzLjIiPiAgPHBhdGggZmlsbD0iI2ZmZiIgZD0iTTE0LjcuOGwtLjQtLjRhMS43IDEuNyAwIDAgMC0yLjMuMUw1LjIgOC4yIDMgNi40YTEuNyAxLjcgMCAwIDAtMi4zLjFMLjQgN2ExLjcgMS43IDAgMCAwIC4xIDIuM2wzLjggMy41YTEuNyAxLjcgMCAwIDAgMi40LS4xTDE1IDMuMWExLjcgMS43IDAgMCAwLS4yLTIuM3oiIGRhdGEtbmFtZT0iUGZhZCA0Ii8+PC9zdmc+);
+}
+
+input[type="radio"] {
+    display: none;
+    position: absolute;
+    width: 100%;
+    appearance: none;
+}
+
+input[type="radio"]:checked + label {
+    background:rgb(185, 241, 183);
+    animation-name: blink;
+    animation-duration: 1s;
+ border-color: $accentcolor;
+}
+
+input[type="radio"]:checked + label:after {
+ background: $accentcolor;
+}
+input[type="radio"]:checked + label:before {
+    width: 20px;
+    height: 20px;
+}
+ /* dropboxn style */
+ .files input {
+    outline: 2px dashed #92b0b3;
+    outline-offset: -10px;
+    -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+    transition: outline-offset .15s ease-in-out, background-color .15s linear;
+    padding: 40px 0px 85px 35%;
+    text-align: center !important;
+    margin: 0;
+    width: 100% !important;
+}
+.files input:focus{     outline: 2px dashed #92b0b3;  outline-offset: -10px;
+    -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+    transition: outline-offset .15s ease-in-out, background-color .15s linear; border:1px solid #92b0b3;
+ }
+.files{ position:relative}
+.files:after {  pointer-events: none;
+    position: absolute;
+    top: 10;
+    left: 0;
+    width: 40px;
+    right: 0;
+    height: 30px;
+    content: "";
+    background-image: url(https://image.flaticon.com/icons/png/128/109/109612.png);
+    display: block;
+    margin: 0 auto;
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+.color input{ background-color:#f1f1f1;}
+.files:before {
+    position: absolute;
+    bottom: 3px;
+    left: 0;  pointer-events: none;
+    width: 100%;
+    right: 0;
+    height: 57px;
+    content: " or drag it here. ";
+    display: block;
+    margin: 0 auto;
+    color: #2ea591;
+    font-weight: 600;
+    text-transform: capitalize;
+    text-align: center;
+}
+
+/* tabtry */
+.tabs{
+    width: 600px;
+    display: block;
+    margin: 40px auto;
+    position: relative;
+}
+
+.tabs .tab{
+    float: left;
+    display: block;
+}
+
+.tabs .tab>input[type="radio"] {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+}
+
+.tabs .tab>label {
+    display: block;
+    padding: 6px 21px;
+    font-size: 12px;
+    text-transform: uppercase;
+    cursor: pointer;
+    position: relative;
+    color: #FFF;
+    background: #4A83FD;
+}
+
+.tabs .content {
+    z-index: 0;/* or display: none; */
+    overflow: hidden;
+    width: 600px;
+    padding: 25px;
+    position: absolute;
+    top: 27px;
+    left: 0;
+    background: #303030;
+    color: #DFDFDF;
+    
+    opacity:0;
+    transition: opacity 400ms ease-out;
+}
+
+.tabs>.tab>[id^="tab"]:checked + label {
+    top: 0;
+    background: #303030;
+    color: #F5F5F5;
+}
+
+.tabs>.tab>[id^="tab"]:checked ~ [id^="tab-content"] {
+    z-index: 1;/* or display: block; */
+   
+    opacity: 1;
+    transition: opacity 400ms ease-out;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100;
+  table-layout: fixed;
+}
+tr:nth-child(even) {
+  background: #f1f7f8;  
+}
+th,
+td {
+  border: 1px solid #a0c8cf;
+  padding: .75rem;
+  text-align: center;
+}
+th {
+  background: #74afb9;
+  color: #fff;
+}
+td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+</style>
+
+<div class="container mt-5  d-flex justify-content-center" id="unq">
+  <div class="col col-sm-9 col-md-6 col-lg-7 shadow" style="border:1px inset #6d5dfc; border-radius: 10px;">
+  <form action="{% url 'proteome:inputfile' %}" method="POST" enctype="multipart/form-data" id="signup">
+    {% csrf_token %}
+    <div class="container">
+      <div class="row d-flex justify-content-center">
+          <div class="mains">
+      <div class="maker">
+          
+            <div class="p-5 d-flex justify-content-center">
+              
+                <div class="col">
+                  <div class="radiobtn">
+                      <input class="form-check-input" type="radio" name="rep_method" id="techrep" value="techrep" checked>
+                      <label class="form-check-label" for="techrep" style="text-align: center;">Technical Replicates </label>
+                      </div></div><div class="col">
+                      <div class="ms-2 radiobtn">
+                          <input class="form-check-input" type="radio" name="rep_method" id="biorep" value="biorep">
+                          <label class="form-check-label" for="biorep" style="text-align: center;">Biological Replicates </label>
+                       </div></div>
+                   
+              
+            
+            </div>
+
+            <div id="technicaldiv">
+              <div class="row">  
+              <div class="mycls">
+                <label class="mt-4">Number of Test Samples:</label>
+                <input type="number" name="no_of_sample" id="inputtech" style="width: 10ch; max-width: 100%; margin-left: 14.1ch;" fdprocessedid="2vn8t" value="">
+              </div>
+              <div class="mycls">
+                <label class="mt-4">Number of Control Samples:</label>
+                <input type="number" name="no_of_control" id="inputtech-control" value="1" style="width: 10ch; max-width:100%; margin-left: 11.3ch;" fdprocessedid="osyvge">
+              </div>
+        
+            </div>
+          </div>
+    
+    
+            <div id="biologicaldiv" style="display: none;">
+              <div class="row">
+
+                  <div class="mycls">
+                  <label class="mt-4">Number of biological replicates:</label>
+                  <input type="number" name="no_of_batches" id="inputbatch" style="width: 10ch; max-width: 100%; margin-left: 7.6ch;" value="">
+                  </div>
+
+                <div class="mycls">
+               <label class="mt-4">Number of test samples:</label>
+              <input type="number" name="samples_in_bio" id="samples_in_bio" style="width: 10ch; max-width: 100%; margin-left: 14.2ch;" value="">
+              </div>
+    
+                <div class="mycls">
+                <label class="mt-4">Number of control samples:</label>
+                <input type="number" name="control_in_bio" id="controls_in_bio" value="1" style="width: 10ch; max-width: 100%; margin-left: 11.3ch;">
+                </div>
+
+            </div></div>
+
+              <div class="p-4 form-group files" id="filegrp"><br>
+                <br>
+                <label style="margin-left: 2rem;">Upload Your File </label><br>
+                <br><input type="file" class="form-control" name = "file" required id="bio-file-filed">
+              </div>
+              <div id="hidDiv" class="hidden">
+            <div class="d-flex justify-content-center" style="overflow-x: scroll; overflow-y: scroll;">
+              <div class="ms-5 d-flex justify-content-center"><div id="ex-data-div" class="mt-3 ms-5 d-flex justify-content-center shadow mb-3"></div></div> 
+              <input type="hidden" id="wokring-with-ex" name="wokring-with-ex"></div></div>
+              <div class="d-flex justify-content-end">
+                <a class="hidden" id="downbtn">
+                 <button type="button" class="btn btn-sm btn-success">
+                <b> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+                   <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                   <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                   </svg> </b><small>
+                 &nbsp;&nbsp;Download(.csv)</small>
+               </button>
+               </a>
+               </div>
+
+                <div class="mt-3 mb-5 d-flex justify-content-center">
+                  <button id ="load-ex-btn" type="button" role="button" class="mt-3 me-3 btn btn-outline-success">Load example data</button><p class="mt-4"><i>or</i>  </p> 
+
+                <button type="submit" class="ms-4 mt-3 btn btn-sm btn__primary p-2" style="width: 6rem;height: 3rem;" fdprocessedid="dehdcy">Submit</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+                
+                
+          </form>              
+            </div>
+          </div>
+
+
+          <div class="dna hidden" id="display">
+            <div class="ele"></div>
+            <div class="ele"></div>
+            <div class="ele"></div>
+            <div class="ele"></div>
+            <div class="ele"></div>
+            <div class="ele"></div>
+            <div class="ele"></div>
+            <div class="ele"></div>
+            <div class="ele"></div>
+            <div class="ele"></div>
+            <div class="ele"></div>
+            <div class="ele"></div>
+            <div class="ele"></div>
+            <div class="ele"></div>
+            <div class="ele"></div>
+            <div class="ele"></div>
+            <div class="ele"></div>
+            <div class="ele"></div>
+            <div class="ele"></div>
+            <div class="ele"></div>
+          </div>
+
+<div  class="spacer"> . </div>
+
+
+<script type="text/javascript">
+const MyFileField = document.getElementById("bio-file-filed");
+const bioDiv = document.getElementById('biologicaldiv');
+const techDiv = document.getElementById('technicaldiv');          
+const Downbtn = document.getElementById('downbtn');
+const dnaloader = document.getElementById('display');
+const contDiv = document.getElementById('unq');
+const fileGrp = document.getElementById('filegrp');
+const hidDiv = document.getElementById('hidDiv');
+document.querySelector('#biorep').addEventListener('click', function() {
+
+bioDiv.style.display = 'block';
+techDiv.style.display = 'none';
+fileGrp.classList.remove('hidden');
+fileGrp.classList.remove('hidden');
+document.getElementById('inputtech').value = "";
+$('#ex-data-div').empty();
+});
+
+document.querySelector('#techrep').addEventListener('click', function() {
+
+bioDiv.style.display = 'none';
+techDiv.style.display = 'block';
+fileGrp.classList.remove('hidden');
+document.getElementById('inputbatch').value = "";
+$('#ex-data-div').empty();
+});
+
+
+const loadExbtn = document.getElementById("load-ex-btn")
+const wokringwithEx = document.getElementById('wokring-with-ex');
+const noTechSamples =  document.getElementById("inputtech");
+const noBioSamples = document.getElementById("samples_in_bio");
+const noBioBatch = document.getElementById("inputbatch");
+const exDataDiv = document.getElementById('ex-data-div');
+
+loadExbtn.addEventListener('click',e=>{
+const repMethod = document.querySelector('input[name="rep_method"]:checked').value;
+
+wokringwithEx.value = "yes";
+dnaloader.style.display = 'block';
+document.getElementById("unq").style.display='none';
+contDiv.classList.add("blur"); 
+
+
+console.log(wokringwithEx)
+
+if (repMethod == "techrep"){
+
+  $.ajax({
+        type: 'get',
+        url: "{% url 'proteome:load_example_technical' %}",
+          success : function(data){
+          $('#ex-data-div').html(data.exData);
+          console.log(data.samples)
+          noTechSamples.value = data.samples;
+          Downbtn.classList.remove('hidden');
+          dnaloader.style.display = 'none';
+          document.getElementById("unq").style.display='block';
+          contDiv.classList.remove("blur"); 
+          fileGrp.classList.add('hidden');
+          hidDiv.classList.remove('hidden');
+          MyFileField.removeAttribute('required');
+          Downbtn.setAttribute("href","{% url 'proteome:exampledown' %}");
+        },
+
+        error: function(error){
+            console.log(error)
+            dnaloader.style.display = 'none';
+            document.getElementById("unq").style.display='block';
+            contDiv.classList.remove("blur"); 
+            alert("Oops Something went wrong");
+          }
+        });
+      }
+        
+        else{
+        $.ajax({
+        type: 'get',
+        url: "{% url 'proteome:load_example_biological' %}",
+          success : function(data){
+          $('#ex-data-div').html(data.exData);
+          console.log(data.samples)
+          noBioSamples.value = data.samples; 
+          noBioBatch.value = data.bioReps;
+          Downbtn.classList.remove('hidden');
+          dnaloader.style.display = 'none';
+          document.getElementById("unq").style.display='block';
+          contDiv.classList.remove("blur"); 
+          fileGrp.classList.add('hidden');
+          hidDiv.classList.remove('hidden');
+          MyFileField.removeAttribute('required');
+          Downbtn.setAttribute("href","{% url 'proteome:exampledownbio' %}");
+
+        },
+        
+        error: function(error){
+            console.log(error)
+            dnaloader.style.display = 'none';
+            document.getElementById("unq").style.display='block';
+            contDiv.classList.remove("blur"); 
+            alert("Oops Something went wrong");
+
+        }
+        });
+
+        }
+
+      });
+
+      $(document).ready(function(){
+      $('#signup').validate({
+        rules:{
+          no_of_sample:{
+            required:true,
+            minlength:1
+           },
+           no_of_batches:{
+            required:true,
+            minlength:1
+           },
+           samples_in_bio:{
+            required:true  ,
+            minlength:1
+           }
+        }
+    })
+  });
+
+  
+</script>
+
+{% endblock %}
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

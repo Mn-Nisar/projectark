@@ -1,0 +1,89 @@
+{% extends 'proteome/base.html' %}
+
+{% block content %}
+
+<script type="text/javascript" src="https://string-db.org/javascript/combined_embedded_network_v2.0.4.js"></script>
+
+
+<body onload ="send_request_to_string()">
+<input type="hidden" id = "score" name="score" value="{{ score }}">
+<div class="conatiner">
+        <div class="row">
+            <div class="d-flex justify-content-end">
+                   <button class="btn btn-lg"><a href="{% url 'proteome:string_db_download' %}">  Download Protein-Protein Interaction data </a></button>
+            </div>
+        </div>
+    <div class="row">
+        <div class="col col-xl-12">
+            <div class="m-4 justify-content-center">
+                <div id="stringEmbedded"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+      <button class="btn btn-lg" onclick="download_svg()">download(.PNG)</button>
+    </div>
+
+</div>
+
+
+<script>
+
+
+        const score = parseInt(document.getElementById('score').value);
+
+          function send_request_to_string() {
+            var proteins = [];
+
+              {{ for_string|safe }}.forEach(item => {
+                    proteins.push(item)
+                    });
+
+          getSTRING('https://string-db.org', {
+                          'species':'9606',
+                          'identifiers':proteins,
+                          'network_flavor':'confidence',
+                          'caller_identity': 'www.ciods.in',
+                          'required_score': score,
+
+              });
+          }
+
+
+        //   function download(
+        //       filename, // string
+        //       blob // Blob
+        //     ) {
+        //       if (window.navigator.msSaveOrOpenBlob) {
+        //         window.navigator.msSaveBlob(blob, filename);
+        //       } else {
+        //         const elem = window.document.createElement('a');
+        //         elem.href = window.URL.createObjectURL(blob);
+        //         elem.download = filename;
+        //         document.body.appendChild(elem);
+        //         elem.click();
+        //         document.body.removeChild(elem);
+        //       }
+        //     }
+
+
+        // function download_svg(){
+
+        //   var svg = document.querySelector('#svg_network_image');
+        //   var data = (new XMLSerializer()).serializeToString(svg);
+        //   // We can just create a canvas element inline so you don't even need one on the DOM. Cool!
+        //   var canvas = document.createElement('canvas');
+        //   canvg(canvas, data, {
+        //     renderCallback: function() {
+        //       canvas.toBlob(function(blob) {
+        //           download('string_network.png', blob);
+        //       });
+        //     }
+        //   });
+        // }
+
+</script>
+</body>
+
+{% endblock %}

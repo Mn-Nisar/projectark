@@ -1,0 +1,13 @@
+<h1> kegg pathway imagee </h1>
+{{ r }}
+
+<script type="text/javascript">
+var rawResponse = {{ img }}; // truncated for example
+// convert to Base64
+var b64Response = btoa(rawResponse);
+// create an image
+var outputImg = document.createElement('img');
+outputImg.src = 'data:image/png;base64,'+b64Response;
+// append it to your page
+document.body.appendChild(outputImg);
+</script>

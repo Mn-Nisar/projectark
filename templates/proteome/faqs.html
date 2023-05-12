@@ -1,0 +1,433 @@
+{% extends 'proteome/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .sidebar {
+  position: fixed;
+  /* width: 240px;
+  left: -240px;
+  height: 100%;
+  background-color: #fff;
+  transition: all 0.5s ease; */
+  top: 20vh;
+  width: 38vh;
+  min-width: 200px;
+  height: 100vh;
+  /* background-color: #e6e6fa; */
+  overflow-y: hidden;
+  overflow-x: hidden;
+  white-space: normal;
+  
+}
+.sidebar.fixed {
+  transform: translateY(-100%);
+}
+
+.main-content {
+    flex: 1;
+    padding-left: 40vh;
+    margin: 30px;
+    line-height: 30px;
+    
+    
+  }
+.sidebar header {
+  font-size: 28px;
+  color: #353535;
+  line-height: 70px;
+  text-align: center;
+  background-color: #e6e6fa;
+  user-select: none;
+  font-family: "Lato", sans-serif;
+}
+.sidebar a {
+  display: block;
+  height: 65px;
+  width: 100%;
+  color: #353535;
+  line-height: 65px;
+  padding-left: 30px;
+  box-sizing: border-box;
+  border-left: 5px solid transparent;
+  text-decoration: none;
+  font-family: "Lato", sans-serif;
+  transition: all 0.5s ease;
+}
+a.active,
+a:hover {
+  border-left: 5px solid var(--accent-color);
+  color: #fff;
+  background: linear-gradient(
+    to left,
+    var(--accent-color),
+    var(--gradient-color)
+  );
+}
+.sidebar a i {
+  font-size: 23px;
+  margin-right: 16px;
+}
+.sidebar a span {
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+#check {
+  display:block;
+}
+
+#check{
+  visibility: hidden;
+}
+#check:checked ~ .sidebar {
+  left: 0;
+}
+#check:checked ~ label #btn {
+  margin-left: 245px;
+  opacity: 0;
+  visibility: visible;
+}
+#check:checked ~ label #cancel {
+  margin-left: 245px;
+  opacity: 1;
+  visibility: visible;
+}
+
+@media (max-width: 860px) {
+  
+  .sidebar {
+    /* height: auto;
+    width: 70px;
+    left: 0;
+    margin: 100px 0; */
+    width: 100%;
+    height: auto;
+  }
+  /* header,
+  #btn,
+  #cancel {
+    display: none;
+  } */
+  span {
+    position: absolute;
+    margin-left: 23px;
+    opacity: 0;
+    visibility: hidden;
+  }
+  .sidebar a {
+    height: 60px;
+  }
+  .sidebar a i {
+    margin-left: -10px;
+  }
+  a:hover {
+    width: 200px;
+    background: inherit;
+  }
+  .sidebar a:hover span {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.sidebar > a.active,
+.sidebar > a:hover:nth-child(even) {
+  --accent-color: #52d6f4;
+  --gradient-color: #c1b1f7;
+}
+.sidebar a.active,
+.sidebar > a:hover:nth-child(odd) {
+  --accent-color: #c1b1f7;
+  --gradient-color: #a890fe;
+}
+
+.frame {
+  width: 50%;
+  height: 30%;
+  margin: auto;
+  text-align: center;
+}
+
+h2 {
+  position: relative;
+  text-align: center;
+  color: #353535;
+  font-size: 60px;
+  font-family: "Lato", sans-serif;
+  margin: 0;
+  color: #a759f5;
+}
+
+p {
+  font-family: "Lato", sans-serif;
+  /* font-weight: 300; */
+  /* text-align: center; */
+  font-size: 14px;
+  /* color: #d6adff; */
+  /* margin: 0; */
+  /* vertical-align: text-top; */
+  position: relative;
+}
+#new{
+  text-align: center;
+  color: #000000;
+}
+p{
+  font-size: large;
+}
+.boxed {
+  border: 3px solid hsl(345deg 100% 47%);
+  border-radius: 25px;
+  /* border: 2px solid #73AD21; */
+  padding: 20px;
+  width: 24em;
+  height: 18em;
+  background: #e6e6fa;
+}
+</style>
+
+
+<!-- <h1> FAqs </h1> -->
+
+<div class="container-fluid">
+      
+    <div class="sidebar" id="sidebar">
+      <input type="checkbox" id="check" checked>
+      <header></header>
+      
+      <a href="#howp">
+        <!-- <i class="fas fa-link"></i> -->
+        <span style="font-size: 1svw;">How to use ProteoArk?</span>
+      </a>
+      <a href="#ls">
+        <!-- <i class="fas fa-stream"></i> -->
+        <span  style="font-size: 1svw;">Labeled samples </span>
+      </a>
+      <a href="#lfs">
+        <!-- <i class="fas fa-calendar"></i> -->
+        <span  style="font-size: 1svw;">Label-free samples</span>
+      </a>
+      <a href="#dea">
+        <!-- <i class="far fa-question-circle"></i> -->
+        <span  style="font-size: 1svw;">Differential expression </span>
+      </a>
+      <!-- <a href="#">
+        <i class="fas fa-sliders-h"></i>
+        <span>Services</span>
+      </a> -->
+      <a href="#contact">
+        <!-- <i class="far fa-envelope"></i> -->
+        <span  style="font-size: 1svw;">Contact</span>
+      </a>
+    </div>
+  
+    <div class="main-content">
+    <section id="howp" class="howp" style="background-color: #fff;">
+      <br>
+      <h2 id="new">How to use ProteoArk?</h2><br>
+      <p style="font-size: large;">
+        ProteoArk provides 4 sections for analysis. Labeled, label-free, Differential expression and visualization. Users can select labeled or label-free sections based on the type of their analysis. If the samples are either SILAC or TMT labeled, choose the labeled sample section and if the samples are label-free, choose the label-free section for analysis. Both sections include normalization, p-value, fold change calculations, gene enrichment analysis, and data visualizations.
+The differential expression analysis section includes p-value, fold change calculation methods, and various visualization methods but does not have normalization. That is, the user can input the normalized data or the data (proteomics/ transcriptomics) which does not need any normalization for differential expression analysis. 
+The fourth section is only for data visualization and provides different types of plots.
+
+      </p><br>
+      
+
+    </section>
+
+    <section id="ls" class="mt-3 ls">
+      <h3 style="font-size:x-large;">Labeled samples</h3><br>
+      <p style="font-size: large;">
+        In the labeled samples section, the analysis pipeline is different for technical and biological replicates. The analysis for biological replicates includes batch correction and is not included in the analysis of technical replicates. The user can choose either technical or biological replicates according to their data.
+
+      </p><br>
+      <p style="font-size: larger;"><b>Biological replicates</b></p><br>
+
+      <p>
+        The analysis of samples which has biological replicates includes the following steps</p><br>
+        
+          <p>•	Normalization</p>
+          <p>•	Batch correction</p>
+          <p>•	Differential expression analysis (P-value and fold change calculation)</p>
+          <p>•	Gene enrichment analysis</p>
+          <p>•	Pathway analysis (KEGG)</p>
+          <p>•	Protein-protein interactions</p><br>
+
+          <p style="font-size: larger;text-align: center;"><b>Input Page</b></p><br>
+
+          <center><img src="{% static 'proteome/snaps/input page.jpg' %}" height="400px" width="500px" ></center>
+          <br>
+          <p>Start the analysis, by uploading your file. The input file can be in CSV, txt, and xlsx formats.
+            Users can mention the number of samples in the test sample column. The number should not include the control, and there is no requirement to mention the number of replicates in each sample. i.e., if the user has 3 samples and one control and two replicates each in samples and control, they can mention 3 and one in the test sample and control column respectively. And confer the number of biological replicates in the corresponding column. Users can run an example analysis to get an overview of the analysis without uploading their data.
+            </p><br>
+            <center><img src="{% static 'proteome/snaps/input2.jpg' %}" height="400px" width="500px" ></center>
+            <br>
+            <p>
+              On this page, the user can group the replicates of samples and control into corresponding containers. The number of containers is depended upon the number of biological samples/batches. The columns which have abundance or intensity will show on the left side of this page. If the input file does not contain any columns as abundance/intensity all the columns in the file will display on this page. Users can drag and drop each column into corresponding containers i.e., if the file contains 3 biological replicates, all the first biological replicates of samples should be in the first container, the second biological replicates of all the samples in the second, and the third biological replicates in the third container in the test sample section. Similar way for the control samples also. Here the replicates in each container will be treated as one batch. 
+            </p><br>
+            <center><img src="{% static 'proteome/snaps/input3.jpg' %}" height="400px" width="500px" ></center><br>
+            <p>Click on the next button after grouping the samples in batches</p><br>
+            <p style="font-size: larger;"><b>Normalization</b></p><br>
+            <center><img src="{% static 'proteome/snaps/input4.jpg' %}" height="400px" width="500px" ></center><br>
+            <p>The data analysis starts with the normalization of replicates. ProteoArk provides 6 normalization methods, <span style="color: red;">sum, Quantile, IRS normalization, Z-score normalization, and trimmed mean of M-values</span>. Users can choose any one of them. 
+              The output from PD/MAXQUANT may contain contaminants and missing values. These errors should be corrected before normalization. The user can replace the missing or empty columns with any value, and the default value will be zero. Delete the contaminants by selecting ‘remove contaminants’ and you can see the list of contaminants by downloading it. 
+              Here ProteoArk provides an option to select the protein accession or gene symbol column in the file for further analysis. If the file does not contain Gene symbol, the protein accession can be converted to Gene symbol and can be used for further analysis. (Those accessions which cannot convert into Gene symbol will have remained as the protein accession)
+              </p><br>
+              <center><img src="{% static 'proteome/snaps/input5.jpg' %}" height="400px" width="500px" ></center><br>
+              <p>Here the user can rename the samples for the ease of further analysis. It is not mandatory but the name provided in this section will consider as sample names for further analysis.</p><br>
+              <center><img src="{% static 'proteome/snaps/input6.jpg' %}" height="400px" width="500px" ></center><br>
+              <p>This is the result page for normalization. The result data can be downloaded in the CSV format. It will contain the input columns and the normalized columns. 
+                Due to some errors in the mass-spec, some proteins may show the abundance value only in one replicate (not in the other 2 replicates in the case of triplicates). ProteoArk will consider this as an error and will remove these proteins from the analysis. <span style="color: red;">Users can download the deleted proteins from the result page</span>.
+                The result page also provides PCA and boxplot for the visualization of normalized data. The plots are provided before and after normalization.
+                </p>
+                <p style="font-size: larger;"><b>Batch correction</b></p><br>
+
+                <center><img src="{% static 'proteome/snaps/input7.jpg' %}" height="400px" width="500px" ></center><br>
+                <p>The normalization method corrects the bias between the replicates in the sample. If the user needs to remove the bias due to the batch, they can use methods in the batch correction section. The COMBAT uses the combat package in Python and it is useful for small datasets. Whereas ‘remove batch effect’ uses the function ‘removeBatcheffect’ in limma. In both methods, the replicates that the user dragged in each container [see section input page] will be treated as one batch. Users who don’t need batch correction can skip the step.</p><br>
+                <p style="font-size: larger;"><b>Differential expression analysis</b></p><br>
+                <center><img src="{% static 'proteome/snaps/input8.jpg' %}" height="400px" width="500px" ></center><br>
+                <p>This step includes the calculation of P- value, and folds change. Here the differential expression is analyzed between the samples and control that are placed in the control and sample containers on the input page. [see input page]
+                  Differential expression analysis can be done in 2 ways, either by using LIMMA (R package) or by the different methods provided by ProteoArk. The significant cut-off value for FC and p-value can be given by the user, and it is used to identify the differentially expressed proteins in the analysis. 
+                  </p><br>
+                  <center><img src="{% static 'proteome/snaps/input9.jpg' %}" height="400px" width="500px" ></center><br>
+      <p>
+        The result page provides a bar chart to represent the proteins that are upregulated and downregulated in every sample. On this page, you can see two numbers, the total number of proteins that are differentially expressed in any one or more samples (provided under the label ‘Total number of Proteins’) and the number of proteins that are differentially expressed among all samples (given under the label ‘Total differentially-regulated proteins across all samples’). The users can download the full result that includes normalization and differential expression calculation and the file which contains only the differentially expressed proteins separately ( in CSV format).
+      </p><br>
+      <p style="font-size: larger;"><b>Volcano and heatmap</b></p><br>
+      <center><img src="{% static 'proteome/snaps/input10.jpg' %}" height="400px" width="500px" ></center><br>
+      <p>Volcano plot is provided for <span style="color: red;">each sample-control comparison in the analysis</span>. And the significant cut-off value used to plot the volcano is the value given by the user on the previous page. But the user can reset the significant cut-off value on the result page also.</p><br>
+      <center><img src="{% static 'proteome/snaps/input11.jpg' %}" height="400px" width="500px" ></center><br>
+      <p>Heatmap represents the FC of statistically significant proteins that are differentially expressed in one or more samples. 2 types of clustering methods are provided for heatmap, Hierarchical and k-means clustering. For k-means, the number of clusters in the dataset (i.e., k) needs to be pre-determined, which can be done using the elbow method provided on the same page. It works by finding WCSS (Within-Cluster Sum of Square) i.e., the sum of the square distance between points in a cluster and the cluster centroid. The K- value will be the point where the elbow gets created (Elbow point). 
+      </p><br>
+      <center><img src="{% static 'proteome/snaps/input12.jpg' %}" height="400px" width="500px" ></center><br>
+      <p>Select the ‘cluster map’ for hierarchical clustering and here the users don’t need to give the number of clusters.
+        The color bar of the heatmap is customized in such a way that the upregulated proteins will be in red and, downregulated proteins in green. If the protein does not have differential expression in a sample, it will be in black. 
+        Users can not go for K-means if the number of differentially expressed proteins is less than 8 (8 is the total number of DE proteins in all datasets)
+        </p><br>
+      
+        <p style="font-size: larger;"><b>Gene ontology</b></p><br>
+        <p style="color: red;">
+          Gene enrichment analysis of differentially expressed proteins provides gene ontology, pathways from KEGG, Reactome, and WikiPathways, miRNA targets from miRTarBase, regulatory motif matches from TRANSFAC, tissue specificity from Human Protein Atlas, protein complexes from CORUM, and human disease phenotypes from Human Phenotype Ontology. 
+        </p><br>
+        <p>
+          Gene enrichment analysis requires the species name and significant p-value cut-off. If the user needs results without any filter, they can provide 1 as a significant p-value cut-off. 
+The result is visualized by a circular bar plot. Each bar in the plot is labeled by the GO number.
+
+        </p><br>
+      
+        <p style="font-size: larger;"><b>KEGG pathway </b></p><br>
+        <center><img src="{% static 'proteome/snaps/input13.jpg' %}" height="400px" width="500px" ></center><br>
+        <p>The list contains all the pathways that are associated with the differentially expressed proteins in the analysis. Users can choose any pathway from the list. The submission shows the corresponding pathway map and highlights the DE proteins in the map. </p><br>
+        <center><img src="{% static 'proteome/snaps/input14.jpg' %}" height="400px" width="500px" ></center><br>
+        <center><img src="{% static 'proteome/snaps/input15.jpg' %}" height="400px" width="500px" ></center><br>
+        <p><b>The analysis ends with STRING. User can download the full results including images and files in compressed format.</b></p><br>
+        <p style="font-size: larger;"><b>Technical replicates </b></p><br>
+        <center><img src="{% static 'proteome/snaps/input16.jpg' %}" height="400px" width="500px" ></center><br>
+        <p>Users can input the number of test samples in the test sample column. The number should not include the control, and there is no requirement to mention the number of replicates in each sample. i.e., if the user has 3 samples to compare with one control, and two replicates each in samples and control, they can mention 3 and one in the test sample and control column respectively. Choose the file for analysis and make sure that the file is in either CSV, txt, or xlsx formats.</p><br>
+
+        <center><img src="{% static 'proteome/snaps/input17.jpg' %}" height="400px" width="500px" ></center><br>
+<p>On this page, the user can group the replicates of samples and control into corresponding containers. Each container represents each sample. Users can drag and drop the columns into corresponding containers i.e., all the replicates of sample 1 should be in the first container, the replicates of sample 2 in the second, and so on. Similar way for the control samples also. </p><br>
+<p>NOTE: The columns which have abundance or intensity will show on the left side of this page. If the input file does not contain any columns as abundance/intensity, all the columns will be displayed on this page.</p><br>
+<center><img src="{% static 'proteome/snaps/input18.jpg' %}" height="400px" width="500px" ></center><br>
+<p>The analysis of technical replicates includes following steps.</p><br>
+<p>•	Normalization</p>
+<p>•	Differential expression analysis (P-value and fold change calculation)</p>
+<p>•	Gene enrichment analysis</p>
+<p>•	Pathway analysis (KEGG)</p>
+<p>•	Protein-protein interactions</p><br>
+<p>For more details see biological replicate analysis section. These steps are common for both the replicates.</p><br>
+    </section>
+
+
+    
+<section id="lfs" class="mt-3 lfs">
+  <h3 style="font-size:x-large;">Label-free samples</h3><br>
+
+  <p>The analysis of technical replicates includes following steps.</p><br>
+  <p>•  Protein quantification</p>
+<p>•	Normalization</p>
+<p>•	Differential expression analysis (P-value and fold change calculation)</p>
+<p>•	Gene enrichment analysis</p>
+<p>•	Pathway analysis (KEGG)</p>
+<p>•	Protein-protein interactions</p><br>
+<p>Data analysis of label-free samples includes protein quantification, normalization of samples, fold change and p-value calculation, GO, and protein interaction network. The steps are similar to labeled free data analysis except for protein quantification.</p><br>
+<p style="font-size: larger;"><b>Protein quantification  </b></p><br>
+<center><img src="{% static 'proteome/snaps/input19.jpg' %}" height="400px" width="500px" ></center><br>
+<p>Proteoark provides 2 methods for protein quantification iBAQ and TOP3. If the user does not need protein quantification they skip this step by choosing ‘NO’, It will lead to a normalization page and further analysis. </p><br>
+<center><img src="{% static 'proteome/snaps/input20.jpg' %}" height="400px" width="500px" ></center><br>
+<p>Choose the method for quantification, iBAQ or TOP3. Enter the enzyme that is used for protein digestion in sample preparation. Upload the reference sequence file that was used for PD or Maxquant during the database search and also need to select the source of the file i.e., if the fasta file is from RefSeq database, select NCBI or if it was downloaded from UniProt select UniProt. Provide minimum and maximum length of peptides and missed cleavage same as in the PD /MAXQUANT search. This information is used to calculate the number of theoretical peptides used in the iBAQ calculation.  Then choose the file for analysis. The file should be peptide file in the following format.</p><br>
+
+<center><img src="{% static 'proteome/snaps/input21.jpg' %}" height="400px" width="500px" ></center><br>
+<p>The first and third columns should be the annotated sequence and intensity of the sequence respectively. The second column is the accession of the protein, it can be either, refseq protein accession, gene symbol or uniprot accession.</p><br>
+<center><img src="{% static 'proteome/snaps/input22.jpg' %}" height="400px" width="500px" ></center><br>
+<p>This is the example for the result file for iBAQ quantification. The file contains the sum of the intensities of all the peptides that belong to the same protein and their corresponding iBAQ values. </p>
+<p>User can download or run the provided example data to format their input file. Quantification of one dataset is possible at a time. Users can repeat this process for multiple datasets and can combine the quantified file for further analysis.
+After the quantification and compilation of the dataset, choose  ‘NO’ for the quantification required box 
+</p><br>
+<center><img src="{% static 'proteome/snaps/input23.jpg' %}" height="400px" width="500px" ></center><br>
+<p style="font-size: larger;"><b>This leads to analayis page   </b></p><br>
+
+<center><img src="{% static 'proteome/snaps/input24.jpg' %}" height="400px" width="500px" ></center><br>
+<p>Here user can choose the pipeline based on the type of replicates. and further analysis is the same as the labeled sample. See section[norm, diff exp analysis, GO, KEGG..]</p><br>
+
+</section>
+
+<section id="dea" class="mt-3 dea">
+  <h3 style="font-size:x-large;">Differential expression analysis</h3><br>
+  <p>Data normalization is a crucial step in data analysis. There are more than xx methods in practice all over the world for proteomic data normalization. Proteoark provides mean normalization, median normalization, quantile normalization, and IRS normalization. If the user has normalized proteomic data, then it can be analysed in the differential expression analysis section i.e., The differential expression analysis section accepts either normalized proteomic data or the proteomic data which does not need any normalization for analysis. </p><br>
+  <center><img src="{% static 'proteome/snaps/input25.jpg' %}" height="400px" width="500px" ></center><br>
+<p>Mention the number of normalized test samples and control in the provided section. The number does not include the number of replicates in the sample and control. i.e., if the data contains 5 samples and one control with 3 replicates, you can mention 5 and one in the normalized test samples and normalized control samples respectively. </p><br>
+<p>Further analysis includes calculation of fold change, p-value, gene enrichment analysis of differentially expressed proteins, pathway analysis, and protein-protein interaction of differentially expressed proteins. And this analysis pipeline is similar to labeled data. For further details see the section [differential analysis, GO, KEGG, PI]</p><br>
+<p style="font-size: larger;"><b>Multiple control  </b></p><br>
+<p>ProteoArk provides options for users to compare samples with multiple control. In this case, instead of one, they can provide the number of control on the input page. For example, if the user has to compare 4 test samples to 2 control samples, mention it as follows.</p><br>
+<center><img src="{% static 'proteome/snaps/input26.jpg' %}" height="400px" width="500px" ></center><br>
+<p>Choose the file for analysis and submit.</p><br>
+<p>On the next page, Drag and drop all the samples and control columns in the corresponding containers. In this example, 2 control samples are dragged in the control container. </p><br>
+
+<p>In case of biological replicates</p><br>
+<center><img src="{% static 'proteome/snaps/input27.jpg' %}" height="400px" width="500px" ></center><br>
+<p>Here all the samples in the test sample are compared with 126 control and 127 sample.</p><br>
+<p>In case of technical replicates</p><br>
+<center><img src="{% static 'proteome/snaps/input28.jpg' %}" height="400px" width="500px" ></center><br>
+<p>After normalization of the data, the user can choose the control for further analysis on the differential expression page. i.e., proteoark will do only one comparison at a time. </p><br>
+<center><img src="{% static 'proteome/snaps/input29.jpg' %}" height="400px" width="500px" ></center><br>
+<p>Select the control and submit for further analysis.</p><br>
+<center><img src="{% static 'proteome/snaps/input30.jpg' %}" height="400px" width="500px" ></center><br>
+<p>The coming result page shows the results of the differential expression analysis of samples with the chosen control. </p><br>
+<p>After the analysis, the user can reset the control (second analysis) and can do differential expression analysis with the second control. The reset option is provided on the result page itself. </p><br>
+
+<p style="font-size: larger;"><b> Data visualization  </b></p><br>
+<p>This section includes 14 different kinds of charts for visualization. Each plot needs the input file in a formatted way. And the user can use the example file given for formatting the input data.</p><br>
+<p>Choose the plot by clicking the image on the home page </p><br>
+<center><img src="{% static 'proteome/snaps/input31.jpg' %}" height="400px" width="500px" ></center><br>
+<center><img src="{% static 'proteome/snaps/input32.jpg' %}" height="400px" width="500px" ></center><br>
+<p>Upload the input file in CSV format and submit.</p><br>
+<center><img src="{% static 'proteome/snaps/input33.jpg' %}" height="400px" width="500px" ></center><br>
+<p>Choose the appropriate fields or give the input values for plotting. The type of data acceptable for the fields is indicated by the symbols ‘Aa’ and ‘#’. ‘Aa’ and ‘#’ denotes character and numerical values respectively. For example,  in the above image, the field term name can accept only the character values and the value field accepts only the numerical values.</p><br>
+<p>ProteoArk accepts not only proteomic but also all kinds of data which is formatted as per instruction for plotting. </p><br>
+</section>
+
+
+  </div>
+</div>
+
+<script>
+
+    var prevScrollpos = window.pageYOffset;
+    window.onscroll = function() {
+  var currentScrollPos = window.pageYOffset;
+  if (prevScrollpos > currentScrollPos) {
+    document.querySelector('.sidebar').style.top="20vh";
+  } 
+  else if(prevScrollpos == currentScrollPos){
+    document.querySelector('.sidebar').style.top="20vh";
+  }
+  else {
+    document.querySelector('.sidebar').style.top="1vh";
+  }
+
+}
+ 
+</script>
+
+{% endblock %}

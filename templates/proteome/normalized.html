@@ -1,0 +1,852 @@
+{% extends 'proteome/base.html' %}
+
+{% block content %}
+
+<style type="text/css">
+
+  .download{
+    margin-left: 5%;
+    text-decoration: none;
+    /* opacity:0.7; */
+  }
+   .download:hover{
+    opacity:1;
+  
+  }
+
+
+.heading {
+    text-decoration: none;
+    position: relative;
+}
+
+.heading:after {
+    content: '';
+    width: 100%;
+    position: absolute;
+    left: 0;
+    bottom: 1px;
+    border-width: 0 0 1px;
+    border-style: solid;
+}
+
+.diffanalysis{
+  position: fixed;
+    top: 10vh;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+    opacity: 1;
+}
+
+
+
+/* .hidden-divs{
+  width: 40%;
+    height: 60%;
+    background-color: white;    
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+} */
+
+
+.hidden{
+  display: none;
+}
+
+.blur {
+  backdrop-filter: blur(5px); /* Apply a blur filter to the background */
+  background-color: rgba(255, 255, 255, 0.5); /* Make the background semi-transparent */
+
+}
+
+/* dna */
+.dnas {
+width: 360px;
+height: 70px;
+perspective: 400px;
+transform-style: preserve-3d;
+position: fixed;
+left: 75vh;
+top: 50vh;
+
+}
+
+.ele {
+width: 1px;
+height: 70px;
+float: left;
+margin: 0 8px;
+border-left: 1px #B0B0B0 dashed;
+position: relative;
+transform: rotateX(-360deg);
+animation: run 2s linear infinite;
+}
+.ele:before, .ele:after {
+content: "";
+width: 10px;
+height: 10px;
+background: rgb(0, 0, 0);
+border-radius: 50%;
+position: absolute;
+left: 50%;
+transform: translateX(-50%);
+}
+.ele:before {
+top: -2px;
+background: rgb(8, 188, 198);
+}
+.ele:after {
+bottom: -2px;
+}
+.ele:nth-of-type(1) {
+animation-delay: -0.15s;
+}
+.ele:nth-of-type(2) {
+animation-delay: -0.3s;
+}
+.ele:nth-of-type(3) {
+animation-delay: -0.45s;
+}
+.ele:nth-of-type(4) {
+animation-delay: -0.6s;
+}
+.ele:nth-of-type(5) {
+animation-delay: -0.75s;
+}
+.ele:nth-of-type(6) {
+animation-delay: -0.9s;
+}
+.ele:nth-of-type(7) {
+animation-delay: -1.05s;
+}
+.ele:nth-of-type(8) {
+animation-delay: -1.2s;
+}
+.ele:nth-of-type(9) {
+animation-delay: -1.35s;
+}
+.ele:nth-of-type(10) {
+animation-delay: -1.5s;
+}
+.ele:nth-of-type(11) {
+animation-delay: -1.65s;
+}
+.ele:nth-of-type(12) {
+animation-delay: -1.8s;
+}
+.ele:nth-of-type(13) {
+animation-delay: -1.95s;
+}
+.ele:nth-of-type(14) {
+animation-delay: -2.1s;
+}
+.ele:nth-of-type(15) {
+animation-delay: -2.25s;
+}
+.ele:nth-of-type(16) {
+animation-delay: -2.4s;
+}
+.ele:nth-of-type(17) {
+animation-delay: -2.55s;
+}
+.ele:nth-of-type(18) {
+animation-delay: -2.7s;
+}
+.ele:nth-of-type(19) {
+animation-delay: -2.85s;
+}
+.ele:nth-of-type(20) {
+animation-delay: -3s;
+}
+
+@keyframes run {
+to {
+  transform: none;
+}
+}
+
+@-webkit-keyframes spin {
+0% { -webkit-transform: rotate(0deg); }
+100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
+}
+
+/* Add animation to "page content" */
+.animate-bottom {
+position: relative;
+-webkit-animation-name: animatebottom;
+-webkit-animation-duration: 1s;
+animation-name: animatebottom;
+animation-duration: 1s
+}
+
+@-webkit-keyframes animatebottom {
+from { bottom:-100px; opacity:0 } 
+to { bottom:0px; opacity:1 }
+}
+
+@keyframes animatebottom { 
+from{ bottom:-100px; opacity:0 } 
+to{ bottom:0; opacity:1 }
+}
+
+
+
+.wrappers {
+  margin: 8px 0;
+}
+
+.state {
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: 1e-5;
+  pointer-events: none;
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  color: #000;
+}
+
+.text {
+  margin-left: 16px;
+  /* opacity: .6; */
+  transition: opacity .2s linear, transform .2s ease-out;
+}
+
+.indicator {
+  position: relative;
+  border-radius: 50%;
+  height: 30px;
+  width: 30px;
+  box-shadow:
+    -8px -4px 8px 0px #ffffff,
+    8px 4px 12px 0px #d1d9e6;
+  overflow: hidden;
+}
+
+.indicator::before,
+.indicator::after {
+  content: '';
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  height: 80%;
+  width: 80%;
+  border-radius: 50%;
+}
+
+.indicator::before {
+  box-shadow:
+    -4px -2px 4px 0px #6d5dfc,
+    4px 2px 8px 0px #6d5dfc;
+    background-color: #6d5dfc;
+}
+
+.indicator::after {
+  background-color: #ecf0f3;
+  box-shadow:
+    -4px -2px 4px 0px #fff,
+    4px 2px 8px 0px #d1d9e6;
+  transform: scale3d(1, 1, 1);
+  transition: opacity .25s ease-in-out, transform .25s ease-in-out;
+}
+
+.state:checked ~ .label .indicator::after {
+  transform: scale3d(.975, .975, 1) translate3d(0, 10%, 0);
+  opacity: 0;
+}
+
+.state:focus ~ .label .text {
+  transform: translate3d(8px, 0, 0);
+  opacity: 1;
+}
+
+.label:hover .text {
+  opacity: 1;
+  font-weight: bold;
+}
+
+</style>
+<div id="unq" style="display: block;">
+<div class="container-fluid">
+  <div class="row">
+    <div class="mt-4 col col-xl-12 col-lg-12">
+      <div class="mt-2 d-flex justify-content-center">
+          <h2 class="h2 heading"> Data Normalisation</h2>
+      </div>
+  </div>
+</div>
+</div>
+<hr align="center" width="100%" style="margin-top: 1rem; margin-bottom: 1rem;">
+
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col col-xl-12 col-xl-12">
+    <div class="d-flex justify-content-end m-3">
+      <p>Total of proteins in data normalization: <b>{{  norm_data_count }}</b>
+    
+        <a href="{% url 'proteome:download_file' %}">
+      <button type="button" class="btn btn-sm btn-success">
+       <b> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+          <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+          <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+          </svg> </b><small>
+        &nbsp;&nbsp;Download(.csv)</small>
+      </button>
+      </a>
+
+      </p>
+  </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col col-xl-12 col-xl-12">
+  <div class="d-flex justify-content-end mx-3 my-1">
+  
+    <div>
+    <p>Total of  removed protein from analysis: <b>{{  contaminant_and_res }}</b>
+      <a href="{% url 'proteome:download_resedue' %}">
+      <button type="button" class="btn btn-sm btn-primary">
+         <b> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+            </svg> </b><small>
+        &nbsp;&nbsp;Download</small>
+        </button>
+        </a>
+      </p>
+    
+    </div>
+
+  </div>
+  </div>
+</div>
+</div>
+
+<div class="container-fluid">
+
+
+{% if pca_before %}
+
+<div class="row">
+<div class="col col-xl-6 col-lg-6">
+
+<div class="d-flex justify-content-center">
+<img src="data:image/svg+xml;base64, {{ pca_before|safe }}">
+
+</div>
+</div>
+
+<div class="col col-xl-6 col-lg-6">
+  <div class="d-flex justify-content-center">
+  <img src="data:image/svg+xml;base64, {{ pca_after|safe }}">
+  </div>
+</div>
+
+</div>
+
+<div class="row">
+
+  <div class="col col-xl-6 col-lg-6">
+  <div class="d-flex justify-content-center">
+      <a class="download" href="data:image/svg+xml;base64, {{ pca_before|safe }}" download = "PCA plot Before Normalisation">
+      <button type="button" class="btn btn-outline-success"> <small>.SVG</small>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+            </svg>
+        </button>
+        </a>
+  </div>
+</div>
+
+<div class="col col-xl-6 col-lg-6">
+  <div class="d-flex justify-content-center">
+  <a class="download" href="data:image/svg+xml;base64, {{ pca_after|safe }}" download = "PCA plot After Normalisation">
+      <button type="button" class="btn btn-outline-success"> <small>.SVG</small>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+          <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+          <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+          </svg>
+      </button>
+    </a>
+  </div>
+</div>
+
+</div>
+{% endif %}
+
+
+</div>
+
+<div class="container">
+  <hr align="center" width="100%" style="margin-top: 1rem; margin-bottom: 1rem;">
+</div>
+
+
+{% if before_norm_box_log %}
+<div class="container-fluid mt-5">
+<div class="row">
+
+<div class="col col-xl-6 col-lg-6">
+  <div class="d-flex justify-content-center">
+  <img src="data:image/svg+xml;base64, {{ before_norm_box_log|safe }}">
+</div>
+</div>
+
+  <div class="col col-xl-6 col-lg-6">
+    <div class="d-flex justify-content-center">
+  <img src="data:image/svg+xml;base64, {{ after_norm_box_log|safe }}">
+  </div>
+  </div>  
+</div>
+
+<div class="row">
+
+  <div class="col col-xl-6 col-lg-6">
+    
+    <div class="d-flex justify-content-center">
+      <a class="download" href="data:image/svg+xml;base64, {{ before_norm_box_log|safe }}" download = "Box plot Before Normalisation" >
+      <button type="button" class="btn btn-outline-success"> <small>.SVG</small>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+            </svg>
+        </button>
+        </a>
+      </div>
+    </div>
+
+<div class="col col-xl-6 col-lg-6">
+<div class="d-flex justify-content-center">
+    <a class="download" href="data:image/svg+xml;base64, {{ after_norm_box_log|safe }}" download = "Box plot After Normalisation">
+      <button type="button" class="btn btn-outline-success"> <small>.SVG</small>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+            </svg>
+        </button>
+    </a>
+  </div>
+
+</div>
+</div>
+
+</div>
+
+<hr align="center" width="100%" style="margin-top: 3rem; margin-bottom: 3rem;">
+<div class="mt-4 col col-xl-11 col-lg-11 d-flex justify-content-end">
+  <button class="mt-1 btn btn__primary btn-lg" onclick="test()" id="bnxt">>>Next</button>
+</div>
+{% endif %}
+
+{% if before_batch_box %}
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col col-xl-6 col-lg-6">
+    <div class="d-flex justify-content-center">
+    <img src="data:image/svg+xml;base64, {{ before_batch_box|safe }}">
+    </div>
+  </div>
+
+   <div class="col col-xl-6 col-lg-6">
+    <div class="d-flex justify-content-center">
+      <img src="data:image/svg+xml;base64, {{ after_batch_box|safe }}">
+    </div>
+  </div>
+
+  </div>
+
+  <div class="row">
+  
+    <div class="col col-xl-6 col-lg-6">
+
+    <div class="d-flex justify-content-center">
+    <a class="download" href="data:image/svg+xml;base64, {{ before_batch_box|safe }}" download = "before batch correction">
+    <button type="button" class="btn btn-outline-success"> <small>.SVG</small>
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+        <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+      </svg>
+     </button>
+     </a>
+    </div>
+  </div>
+
+ <div class="col col-xl-6 col-lg-6">
+  <div class="d-flex justify-content-center">
+    <a class="download" href="data:image/svg+xml;base64, {{ after_batch_box|safe }}" download = "After batch correction">
+      <button type="button" class="btn btn-outline-success"> <small>.SVG</small>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+            </svg>
+        </button>
+    </a>
+  </div>
+
+</div>
+
+</div>
+</div>
+
+
+<div class="container">
+
+<hr align="center" width="100%" style="margin-top: 3rem; margin-bottom: 3rem;">
+  <div class="row d-flex justify-content-center">
+  <div class="col col-xl-8 col-lg-8">
+    <div class="d-flex justify-content-center">
+    <h4 class="heading"> Batch Correction </h4>
+    </div>
+    </div>
+  </div>
+
+
+  <div class="row d-flex justify-content-end mt-3">
+    <div class="col col-xl-8 col-lg-8">
+    <form id = "batch-form" style="display: flex;">
+      {% csrf_token %}
+    
+    <p class="mx-2 mt-1">Chose Batch correction method:</p>
+    <select class="form-select mx-2" name="batch_method" id="batch_method" style="max-width: 100%; width: 40ch;">
+    
+      <option value="combat">Combat batch correction</option>
+      <option value="limma">Limma remove batch effect</option>
+      <input type="submit" name="submit" value="Submit" class="btn btn__primary">
+      <input type="button" role ="button" value="skip" class="btn btn-danger mx-3" onclick="test()" id="skip-batch">
+
+    </select>
+  </form>
+  </div>
+</div>
+</div>
+
+{% endif %}
+
+
+<div class="container-fluid" id="wrap">
+  <div class="row" style="margin-top: 2em;">
+  <div class="col col-xl-6 col-lg-6">
+    <div class="d-flex justify-content-center">
+      <div id = "bfr-batch-correct-plot"></div>
+    </div>
+  </div>
+
+ <div class="col col-xl-6 col-lg-6">
+    <div class="d-flex justify-content-center">
+    <div id = "after-batch-correct-plot"></div>
+  </div>
+</div>
+</div>
+
+
+<div class="row">
+  <div class="col col-xl-6 col-lg-6">
+    <div class="d-flex justify-content-center">
+      <div id = "bfr-batch-correct-plot-dwn"></div>
+    </div>
+  </div>
+
+ <div class="col col-xl-6 col-lg-6">
+    <div class="d-flex justify-content-center">
+    <div id = "after-batch-correct-plot-dwn"></div>
+  </div>
+</div>
+</div>
+<div class="mt-2 row">
+  <div class="mt-4 col col-xl-11 col-lg-11 d-flex justify-content-end">
+    <button class="mt-1 btn btn__primary btn-lg hidden" onclick="test()" id="bcnxt">>>Next</button>
+  </div>
+</div>
+</div>
+
+
+<div class="container">
+
+<hr align="center" width="100%" style="margin-top: 3rem; margin-bottom: 3rem;">
+</div>
+
+</div>
+
+
+
+<div class="ms-2 container-fluid hidden diffanalysis animate__animated animate__backInUp" id="diffex">
+  <div class="ms-4 row d-flex justify-content-center">
+    <div class="col col-xl-8 col-l-8">
+
+      <div class="px-5 py-5 shadow" style="border:1px inset #6d5dfc; border-radius: 10px;">
+        <div class="row">
+          <div class="col col-lg-10 col-xl-10 d-flex justify-content-center">
+      <div class="d-flex justify-content-end">  <h4 class="ms-3 heading"> Differential Expression Analysis </h4> </div>
+      </div>
+      <div class="col col-lg-2 col-xl-2">
+      <div class="d-flex justify-content-end "> <button class="btsn" id="close-diff"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+      </svg></button></div>
+    </div></div>
+              <form action="{% url 'proteome:pvalues' %}" method="POST">
+                {% csrf_token %}
+                <div class="row d-flex">
+                  <div class="col col-xl-6 col-lg-6 justify-content-start">
+                    <div class="mt-4">
+                      <label>P-value Calculation :</label></div>
+                       <div class="mt-3 wrappers">
+                         <input class="form-check-input state" type="radio" name="pvalue" id="limma" value="limma">
+                         <label class="form-check-label label" for="limma">
+                           <div class="indicator"></div>
+                           <span class="text">  Limma</span>
+                         </label>
+                       </div>
+                       <div class="wrappers">
+                         <input class="form-check-input state" type="radio" name="pvalue" id="weltch" value="weltch" checked>
+                         <label class="form-check-label label" for="weltch">
+                           <div class="indicator"></div>
+                           <span class="text"> Welch’s t-test </span>
+                         </label>
+                       </div>
+                       <div class="wrappers">
+                         <input class="form-check-input state"  type="radio" name="pvalue" id="ttest" value="ttest">
+                         <label class="form-check-label label" for="ttest">
+                           <div class="indicator"></div>
+                           <span class="text">Standard independent two sample t-test </span>
+                         </label>
+                       </div>
+                       <div class="wrappers">
+                         <input class="form-check-input state" type="radio" name="pvalue" id="anova" value="anova">
+                         <label class="form-check-label label" for="anova">
+                           <div class="indicator"></div>
+                           <span class="text"> One-way ANOVA </span>
+                         </label>
+                       </div>
+                       <div class="wrappers">
+                           <input class="form-check-input state" type="radio" name="pvalue" id="2anova" value="2anova">
+                           <label class="form-check-label label" for="2anova">
+                             <div class="indicator"></div>
+                             <span class="text">  2 Way Anova </span>
+                           </label>
+                         </div>
+                        
+            
+      
+                      {% if control_to_select %}
+                      <div class="m-3">
+      
+                        <label for="selected-contro">Select the control</label>
+      
+                        <select class="form-select" name="selected-control" id="selected-control" style="width: 15ch; max-width: 100%;margin-left: 10em;margin-top: -2em;">
+                          {% for key, control in control_to_select.items %}
+                          <option value="{{ key }}">{{ control }}</option>
+                          {% endfor %}
+                        </select>
+      
+                      </div>
+                      {% endif %}
+      
+                    </div>    
+                  
+                  <div class="col col-xl-6 col-lg-6 justify-content-end">
+                    <!-- ------------------------ -->
+                    <div class="ms-5">
+                    <div class="mt-4">
+                      <label>Ratio / Fold-change :</label></div>
+                    <div class="mt-3 wrappers mb-2">
+                      <input class="form-check-input state" type="radio" name="ratiolg2" id="ratio" value="ratio">
+                      <label class="form-check-label label" for="ratio">
+                        <div class="indicator"></div>
+                        <span class="text"> Ratio </span>
+                      </label>
+                    </div>
+    
+                        <div id="fcvalueDiv" style="display: none;">
+                          <div class="ms-5 form-inline">
+                              <label class="mx-2 mt-2">Upregulated:</label><input class="input-sm" type = "text" name="fc_right" value="1.5"
+                                style="margin-left:3ch; width: 10ch; max-width: 100%;">
+                            </div>
+                            <div class="ms-5 form-inline mt-1 mb-3">
+                              <label class="mx-2 mt-2">Downregulated:</label><input class="input-sm" type = "text" name="fc_left" value="0.67"
+                              style=" margin-left:1ch;  width: 10ch; max-width: 100%;">
+                          </div>
+                        </div>
+                        
+                        <div class="mt-2 wrappers">
+                          <input class="form-check-input state" type="radio" name="ratiolg2" id="lg2" value="lg2" checked>
+                          <label class="form-check-label label" for="lg2">
+                            <div class="indicator"></div>
+                            <span class="text"> Fold change</span>
+                          </label>
+                        </div>
+                        <div class="ms-5" id="logValueDiv">
+                          <label class="mx-2 mt-2">Cut-off<b>±</b>:</label><input class="input-sm ml-4" type = "text" name="lg2cut" value="0.5"
+                          style=" margin-left:1ch;  width: 10ch; max-width: 100%;">
+                      </div>
+                    </div>
+                </div>
+                  </div>
+       
+                          <div class="mt-1 ms-3">  <label><br>P-value Cut-off:</label>
+                            <input class="input-sm" type="text" name="pv_cutoff" value="0.05" style="width: 10ch; max-width: 100%;">
+                            </div>
+                            <div class="row">
+                              <div class="col-12" style="align-items: end;">
+                          <input class="btn btn-lg btn__primary" type="submit" name="submit" style="margin-left: 85%;" >
+                              </div></div>
+                    </div></div>
+                    
+                </div>
+               
+                
+              </form>
+             
+      </div>
+      <div  class="spacer"> . </div>
+</div>
+</div>
+</div>
+
+<div  class="spacer"> . </div>
+</div>
+<div class="dnas" id="display" style="z-index: 1;display: none;">
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+</div>
+
+
+<div  class="spacer"> . </div>
+<div  class="spacer"> . </div>
+
+
+<script type="text/javascript">
+const ratio = document.getElementById('ratio');
+const lg2 = document.getElementById('lg2');
+const diffex = document.getElementById('diffex');
+// const graphh = document.getElementById('display');
+const back = document.getElementById('unq');
+const wrapp = document.getElementById('wrap');
+const dnaloader = document.getElementById('display');
+const btnnext = document.getElementById('bcnxt');
+const nxtBtn = document.getElementById('bnxt');
+
+document.querySelector('#ratio').addEventListener('click', function() {
+const fcvalueDiv = document.getElementById('fcvalueDiv');
+const logValueDiv = document.getElementById('logValueDiv');
+fcvalueDiv.style.display = 'block';
+logValueDiv.style.display = 'none';
+
+});
+
+document.querySelector('#lg2').addEventListener('click', function() {
+const fcvalueDiv = document.getElementById('fcvalueDiv');
+const logValueDiv = document.getElementById('logValueDiv');
+
+fcvalueDiv.style.display = 'none';
+logValueDiv.style.display = 'block';
+});
+
+batchDiv = document.getElementById('batch-form-div');
+batchForm = document.getElementById('batch-form');
+
+
+ 
+
+const skipBc = document.getElementById("skip-batch")
+
+
+function test(){
+  back.style.opacity=0.024;
+  diffex.classList.remove('hidden');
+  diffex.style.opacity=1;
+}
+
+const closeDiffBtn = document.getElementById("close-diff");
+closeDiffBtn.addEventListener('click',function(){
+  diffex.classList.add("hidden");
+  back.style.opacity=1;
+})
+
+
+batchForm.addEventListener('submit', e=>{
+    e.preventDefault()
+    const csrf = document.getElementsByName('csrfmiddlewaretoken');
+    // var batchMethod = document.querySelector('input[name="batch_method"]:checked').value;
+    const batchMethod =  document.getElementById('batch_method').value;
+    console.log(batchMethod);
+
+    const fd = new FormData()
+    fd.append('csrfmiddlewaretoken', csrf[0].value)
+    fd.append('batchMethod',batchMethod)
+    dnaloader.style.display="block";
+    back.classList.add("blur");
+    dnaloader.style.opacity = '1';
+    // dnaloader.classList.remove("hidden");
+
+
+    $.ajax({
+        type: 'POST',
+        url: "{% url 'proteome:perform_btch_cr' %}",
+        enctype: 'multipart/form-data',
+        data: fd,
+        success : function(data){
+      $('#bfr-batch-correct-plot').html(`<img src="data:image/svg+xml;base64,${data.before_batch_box}">`);
+      $('#after-batch-correct-plot').html(`<img src="data:image/svg+xml;base64,${data.after_batch_box}">`);
+          // dnaloader.classList.add("hidden");
+          dnaloader.style.display="none";
+          back.classList.remove("blur"); 
+          dnaloader.style.opacity = '0';
+          btnnext.classList.remove("hidden");
+          nxtBtn.classList.remove("hidden");
+
+
+            },
+        error: function(error){
+            console.log('errror')
+            dnaloader.style.display = 'none';
+            back.classList.remove("blur"); 
+            alert('Oops Something went wrong !!');
+        },
+        cache: false,
+        contentType: false,
+        processData: false,
+        });
+   });
+
+
+</script>
+
+{% endblock %}

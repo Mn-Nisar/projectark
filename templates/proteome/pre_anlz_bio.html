@@ -1,0 +1,977 @@
+{% extends 'proteome/base.html' %}
+
+{% block content %}
+
+<style type="text/css">
+.dragging{
+    opacity: 0.5;
+}
+
+div::-webkit-scrollbar{
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+div::-webkit-scrollbar-track{
+  background:#D3D3D3;
+}
+
+div::-webkit-scrollbar-thumb{
+  background:#B0E0E6;
+}
+div[class^="samples"]::-webkit-scrollbar{
+  width: 0.2rem;
+  height: 0.2rem;
+
+
+}
+
+#sample-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 10px;
+}
+
+
+.control-wrapper{
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+}
+
+#control-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 10px;
+
+}
+
+
+div[class^="samples"]
+ {
+  overflow-y: scroll;
+  margin: 2px 10px 10px 10px;
+  width: 170px;
+  height: 200px;
+  border:2px solid black;
+
+}
+
+.sample-legend{
+  margin: 10px 10px 3px 10px;
+    font-size: small;
+    text-align: center;
+    font-weight: bold;
+
+}
+
+.abdlistcolumn{
+  position: absolute;
+  overflow: hidden;
+  height:77%;
+  width:20%;
+
+}
+
+.wrapper1
+{
+    margin: 1%;
+  width: 100%;
+  height:100%;
+}
+
+
+.allow-scroll1 {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    overflow-y: scroll;
+    overflow-x: scroll;
+}
+
+.control-and-sample
+{
+  position: absolute;
+  overflow: hidden;
+  left:25%;
+  height:77%;
+  width:70%;
+}
+
+.wrapper{
+  width: 100%;
+  height:100%;
+}
+
+.allow-scroll{
+    position: relative;
+    height: 100%;
+    width: 100%;
+    overflow-y: scroll;
+    overflow-x: scroll;
+}
+
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+  z-index: 5;
+}
+
+.hidden {
+  display: none;
+}
+
+
+
+#hidden-from{
+    width: 40%;
+    height: 60%;
+    background-color: white;    
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+#hidden-naming-div{
+  width: 40%;
+    height: 60%;
+    background-color: white;    
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+:root {
+  --primary-light: #8abdff;
+  --primary: #6d5dfc;
+  --primary-dark: #5b0eeb;
+  --white: #ffffff;
+  --greyLight-1: #e4ebf5;
+  --greyLight-2: #c8d0e7;
+  --greyLight-3: #bec8e4;
+  --greyDark: #9baacf;
+}
+
+.btn__primary {
+  grid-column: 1/2;
+  grid-row: 4/5;
+  background: var(--primary);
+  box-shadow: inset 0.2rem 0.2rem 1rem var(--primary-light), inset -0.2rem -0.2rem 1rem var(--primary-dark), 0.3rem 0.3rem 0.6rem var(--greyLight-2), -0.2rem -0.2rem 0.5rem var(--white);
+  color: var(--greyLight-1);
+}
+.btn__primary:hover {
+  color: var(--white);
+}
+.btn__primary:active {
+  box-shadow: inset 0.2rem 0.2rem 1rem var(--primary-dark), inset -0.2rem -0.2rem 1rem var(--primary-light);
+}
+
+
+.radiogroup {
+  padding: 27px 36px;
+  border-radius: 16px;
+  background: #fff;
+  width: 100vh;
+  /* box-shadow:
+    4px 4px 4px 0px #a29ae1 inset,
+    -4px -4px 4px 0px #9b97c1 inset; */
+    border: 1px solid #5b0eeb;
+}
+
+
+.wrappers {
+  margin: 8px 0;
+}
+
+.state {
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: 1e-5;
+  pointer-events: none;
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  color: #000;
+}
+
+.text {
+  margin-left: 16px;
+  /* opacity: .6; */
+  transition: opacity .2s linear, transform .2s ease-out;
+}
+
+.indicator {
+  position: relative;
+  border-radius: 50%;
+  height: 30px;
+  width: 30px;
+  box-shadow:
+    -8px -4px 8px 0px #ffffff,
+    8px 4px 12px 0px #d1d9e6;
+  overflow: hidden;
+}
+
+.indicator::before,
+.indicator::after {
+  content: '';
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  height: 80%;
+  width: 80%;
+  border-radius: 50%;
+}
+
+.indicator::before {
+  box-shadow:
+    -4px -2px 4px 0px #6d5dfc,
+    4px 2px 8px 0px #6d5dfc;
+    background-color: #6d5dfc;
+}
+
+.indicator::after {
+  background-color: #ecf0f3;
+  box-shadow:
+    -4px -2px 4px 0px #fff,
+    4px 2px 8px 0px #d1d9e6;
+  transform: scale3d(1, 1, 1);
+  transition: opacity .25s ease-in-out, transform .25s ease-in-out;
+}
+
+.state:checked ~ .label .indicator::after {
+  transform: scale3d(.975, .975, 1) translate3d(0, 10%, 0);
+  opacity: 0;
+}
+
+.state:focus ~ .label .text {
+  transform: translate3d(8px, 0, 0);
+  opacity: 1;
+}
+
+.label:hover .text {
+  opacity: 1;
+  font-weight: bold;
+}
+.spacer{
+  margin-bottom: 110px; /* how high is your footer */
+  visibility: hidden;
+} 
+.btsn {
+            cursor: pointer;
+            border: #fff;
+            background-color: transparent;
+            color: #6d5dfc;
+            font-size: 1.5em;
+       
+            
+        }
+.btsn:hover{
+  color: #ff0f1f;
+}
+</style>
+
+<div class="overlay hidden"></div>
+
+ {% if abd_columns %}
+
+
+<form action="{% url 'proteome:analaze_cols_bio' %}" method="POST" class="form">
+          {% csrf_token %}
+    <div class="container">
+            <div class="mt-2 row">
+          <input type="hidden" id="number_of_batches" name="number_of_batches" value="{{ number_of_batches }}">
+          <input type="hidden" id="job_id" name="job_id" value="{{ job_id }}">
+          <input type="hidden" id = "final_sample_data" name="final_sample_data">
+          <input type="hidden" id = "final_control_data" name="final_control_data">
+          <input type="hidden" id = "final_sample_name" name="final_sample_name">
+          <input type="hidden" id = "final_control_name" name="final_control_name">
+
+          </div>
+    </div>
+
+
+<div class="mt-2 main-container" id="main-cont">
+  <div class="abdlistcolumn">
+    <div class="wrapper1">
+    <div class="allow-scroll1" id = "abdlistspace" >
+
+       <ul>
+        {% for column in abd_columns %}
+
+       <li class="draggable bd-highlight m-1" draggable ="true" type="text" name="samples" style="cursor: grab; color: black;
+      background-color: #F0F8FF;list-style: none;
+        border:1px solid black;  text-align: center;"> <small style="font-size: 12px;">{{ column }}
+        </small>
+      </li>
+       {% endfor %}
+     </ul>
+      </div>
+  </div>
+  </div>
+
+
+<div class="control-and-sample">
+  <div class="wrapper">
+    <div class="allow-scroll">
+
+      <div class="mx-3 d-flex justify-content"> <h4 class="h4 heading mx-2">Test samples</h4></div>
+     
+          <div id="sample-container"> </div>
+          <div>
+            <small class="mx-2 text-muted"> * Drag and drop all <b>{{ number_of_samples }} </b> Test / Treated samples of each biological replicates into the corresponding sample container</small>
+          </div>
+          <hr>
+
+      <div class="mx-3 d-flex justify-content-start"> <h4 class="h4 heading mx-2">Control samples</h4></div>
+
+        <div>
+         <br> <small class="mx-3 text-muted"> * Drag and drop all Control samples of each biological replicates into the corresponding control container</small>
+        </div>
+
+        <div id="control-container"></div>
+      </div>
+  </div>
+</div>
+
+  <div>
+    <input style="margin-left: 180vh; margin-top: 78vh;" type="button" id="confirm" class="btn btn-lg btn__primary" value="Next>>">
+  </div>
+
+
+</div>
+
+{% endif %}
+    <div id="hidden-from" style="display: none;" class="animate__bounceIn justify-content-start">
+        <div class="wrapper justify-content-start">
+          <div class="radiogroup justify-content-start">
+            <div class="d-flex justify-content-end">
+              <button type="button" class="btsn" id = "close-norm-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                      <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                  </svg>
+              </button>
+            </div>
+          <div class="row d-flex justify-content-start">
+           
+          <div class="col col-xl-6 col-l-6 justify-content-start">
+
+          <div class="mt-4">
+         <label>Normalization method : </label></div>
+          <div class="mt-3 wrappers">
+            <input class="state" type="radio" name="norm_method" id="Median" value="Median">
+            <label class="label" for="Median">
+              <div class="indicator"></div>
+              <span class="text"> Median</span>
+            </label>
+          </div>
+          <div class="wrappers">
+            <input class="state" type="radio" name="norm_method" id="Sum" value="Sum">
+            <label class="label" for="Sum">
+              <div class="indicator"></div>
+              <span class="text">Sum </span>
+            </label>
+          </div>
+          <div class="wrappers">
+            <input class="state" type="radio" name="norm_method" id="Quntail" value="Quntail" checked>
+            <label class="label" for="Quntail">
+              <div class="indicator"></div>
+              <span class="text">Quantile </span>
+            </label>
+          </div>
+          <div class="wrappers">
+            <input class="state" type="radio" name="norm_method" id="irs" value="irs">
+            <label class="label" for="irs">
+              <div class="indicator"></div>
+              <span class="text"> IRS Normalization </span>
+            </label>
+          </div>
+          <div class="wrappers">
+              <input class="state" type="radio" name="norm_method" id="zscore" value="zscore">
+              <label class="label" for="zscore">
+                <div class="indicator"></div>
+                <span class="text"> Z-score normalization </span>
+              </label>
+            </div>
+            <div class="wrappers">
+              <input class="state" type="radio" name="norm_method" id="TMM" value="TMM">
+              <label class="label" for="TMM">
+                <div class="indicator"></div>
+                <span class="text"> Trimmed Mean of M-values </span>
+              </label>
+              <div id="tmmprop" style="display: none;">
+                <br>  <label> <small style="margin-left:1ch">Proportion to cut</small> </label>
+                  <input style="width: 6ch; max-width: 100%;" type="number" name="tmmpr" value="10" min="5" max="30">%
+              </div>
+            </div>
+
+
+
+
+
+        <div class="mt-4">  <label>Impute missing value with:</label>
+        <input type="text" name="missing_val" value="0"  style="width: 10ch; max-width: 100%;">
+        </div>
+
+      </div>   
+      <div class="col col-xl-6 col-l-6 justify-content-start">   
+        <div class="mt-4">
+          <div class="mt-1 form-check">
+            <input class="form-check-input" type="checkbox" value="contaminant" id="contaminant">
+            <label class="form-check-label" for="contaminant">
+              Remove <a href="#"> Contaminant</a>
+            </label>
+          </div>
+      </div>
+
+        <div class="m-1">
+          <br> <label> Select Protien Accession Column: </label>
+          <select class="mt-2 form-select" required id="myform" aria-label="Default select example" name = "accession-col" >
+  
+              <option disabled></option>
+              {% for col in accession_col %}
+              <option value="{{ col }}">{{ col }}</option>
+              {% endfor %}
+            </select>
+        </div>
+        
+        <div class="m-1">
+
+          <br> <label style="text-align: justify;"> Select gene symbol Column: </label>
+           <select class="mt-2 form-select" aria-label="Default select example" name = "gene-col">
+               <option disabled selected value></option>
+              {% for col in gene_col %}
+              <option value="{{ col }}">{{ col }}</option>
+              {% endfor %}
+
+            </select>
+
+            <div class="mt-4 form-check">
+              <input class="form-check-input" type="checkbox" value="convert_acc" name="convert_acc">
+               <label class="form-check-label" for="flexCheckDefault" style="text-align: justify;">
+                Convert Protien Accession to gene symbol              
+              </label>
+            
+            </div>
+          </div>
+
+
+          <div class="mt-4 d-flex justify-content-end">
+            <input type="button" id="normDone" class="btn btn-lg btn__primary" value="Next >>" >
+          </div>
+
+          </div>
+
+    </div>
+  </div>
+  </div>
+</div>
+<div  class="spacer"> . </div>
+
+<div id="hidden-naming-div" style="display: none;" class="animate__bounceIn">
+<div class="container" style="position:absolute;">
+
+    <div class="row d-flex justify-content-center">
+      <div class="col col-xl-12 col-lg-12 col-md-12">
+        <div class="shadow p-5" style="border:1px inset #6d5dfc; border-radius: 10px;">
+
+           <div class="d-flex justify-content-end">
+              <button type="button" class="btsn" id = "close-name-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                      <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                  </svg>
+              </button>
+            </div>
+
+            <div class="m-5">
+            <label>Rename Test Samples: </label>
+            <div id ="naming-div-samp" class="p-2">
+            </div>
+            <label> Rename Control Samples: </label>
+          <div id ="naming-div-cont" class="p-2">
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+
+
+     <div class="row">
+        <div class="col col-xl-12 col-l-12">
+          <div class="d-flex justify-content-center">
+          <input class ="form-button btn btn-lg btn__primary mt-4" type="submit" name="Analyze" id="submit">
+          </div>
+        </div>
+      </div>
+
+  </div>
+  </div>
+  <!-- <div  class="spacer"> . </div> -->
+
+</form>
+           
+
+
+
+<script type="text/javascript">
+
+'use strict';
+
+
+
+const overlay = document.querySelector('.overlay');
+
+document.querySelector('#TMM').addEventListener('click', function() {
+const tmm = document.getElementById('tmmprop');
+tmm.style.display = 'block';
+});
+
+
+const form = document.querySelector("form");
+const myform = document.getElementById("myform");
+const paras = document.querySelector("p");
+
+
+
+const number_of_batches = Number(document.querySelector('#number_of_batches').value);
+
+for(var i = 1; i <= number_of_batches ; ++i){
+
+    var para = document.createElement('p');
+    var node = document.createTextNode('Biological replicate '+i);
+
+    para.appendChild(node);
+    para.classList.add('sample-legend');
+
+    var div = document.createElement('div');
+      div.id = `samples-${i}`;
+      div.classList.add('samples');
+
+    var wrapper = document.createElement('div');
+    wrapper.appendChild(para);
+    wrapper.appendChild(div);
+    wrapper.classList.add('control-wrapper');
+
+  document.getElementById('sample-container').appendChild(wrapper);
+
+    }
+
+
+for(var i = 1; i <= number_of_batches ; ++i){
+
+    var para = document.createElement('p');
+    var node = document.createTextNode('Biological replicate '+i);
+    para.appendChild(node);
+    para.classList.add('sample-legend')
+
+    var div = document.createElement('div');
+    div.id = `control-${i}`;
+    div.classList.add('samples');
+    var wrapper = document.createElement('div');
+    wrapper.appendChild(para);
+    wrapper.appendChild(div);
+    wrapper.classList.add('control-wrapper');
+    document.getElementById('control-container').appendChild(wrapper);
+
+    }
+
+
+const draggables = document.querySelectorAll('.draggable');
+const containers = document.querySelectorAll('.samples');
+const abdlistspace = document.getElementById('abdlistspace');
+
+
+draggables.forEach(draggable =>{
+    draggable.addEventListener('dragstart',() =>{
+        draggable.classList.add('dragging')
+        })
+    draggable.addEventListener('dragend',() =>{
+      draggable.classList.remove('dragging')
+      draggable.classList.add('inside-div')
+    })
+})
+
+containers.forEach(container => {
+    container.addEventListener('dragover', e => {
+      e.preventDefault()
+      const draggable = document.querySelector('.dragging')
+      container.appendChild(draggable)
+            });
+
+      abdlistspace.addEventListener('dragover', e => {
+      e.preventDefault()
+      const draggable = document.querySelector('.dragging')
+      abdlistspace.appendChild(draggable)
+            });
+
+});
+
+
+function longestCommonSubstring(str1, str2){
+    if (!str1 || !str2)
+        return {
+            length: 0,
+            sequence: "",
+            offset: 0
+        };
+
+    var sequence = "",
+        str1Length = str1.length,
+        str2Length = str2.length,
+        num = new Array(str1Length),
+        maxlen = 0,
+        lastSubsBegin = 0;
+
+    for (var i = 0; i < str1Length; i++) {
+        var subArray = new Array(str2Length);
+        for (var j = 0; j < str2Length; j++)
+            subArray[j] = 0;
+        num[i] = subArray;
+    }
+    var thisSubsBegin = null;
+    for (var i = 0; i < str1Length; i++)
+    {
+        for (var j = 0; j < str2Length; j++)
+        {
+            if (str1[i] !== str2[j])
+                num[i][j] = 0;
+            else
+            {
+                if ((i === 0) || (j === 0))
+                    num[i][j] = 1;
+                else
+                    num[i][j] = 1 + num[i - 1][j - 1];
+
+                if (num[i][j] > maxlen)
+                {
+                    maxlen = num[i][j];
+                    thisSubsBegin = i - num[i][j] + 1;
+                    if (lastSubsBegin === thisSubsBegin)
+                    {//if the current LCS is the same as the last time this block ran
+                        sequence += str1[i];
+                    }
+                    else //this block resets the string builder if a different LCS is found
+                    {
+                        lastSubsBegin = thisSubsBegin;
+                        sequence= ""; //clear it
+                        sequence += str1.substr(lastSubsBegin, (i + 1) - lastSubsBegin);
+                    }
+                }
+            }
+        }
+    }
+    return sequence;
+}
+
+
+function namingFunction(fornameSample) {
+
+var eachsamps = [];
+var newEachSamps = [];
+var finalNamesSamp = []
+var samp;
+
+for(var i = 0;i<fornameSample.length;i++)
+
+{
+  eachsamps = fornameSample[i]
+
+  for(var j=0;j<eachsamps.length;j++)
+  {
+    samp = eachsamps[j]
+    samp = samp.replace(/\n|\r/g, "");
+    samp = samp.replace('Abundances',"")
+    samp = samp.replace('abundances',"")
+    samp = samp.replace('Abundance',"")
+    samp = samp.replace('abundance',"")
+    samp = samp.replace(',',"")
+    samp = samp.trim();
+    newEachSamps.push(samp);
+  }
+
+  finalNamesSamp.push(longestCommonSubstring(newEachSamps[0],newEachSamps[1]))
+  newEachSamps = []
+  eachsamps = []
+}
+return finalNamesSamp;
+}
+
+
+
+document.querySelector('#confirm').addEventListener('click', function() {
+const hidForm = document.getElementById('hidden-from');
+let value;
+let abdSample;
+let abdarray = [];
+let sample_data = [];
+let sampleJoinedAbdarray = [];
+
+let controlValue;
+let abdControl;
+let controlAbdarray = [];
+let controlJoinedAbdarray = [];
+
+let controlData = [];
+
+let fornameSample = []
+let fornameControl = []
+
+
+
+// in case if they do not drag and drop for some columns create a new no_of samp and control
+
+let new_number_of_batches = 0; 
+
+for (let i = 1; i <= number_of_batches; i++){
+  let sample_div = document.querySelector(`#samples-${i}`)
+  if(sample_div.childNodes.length > 0){
+    new_number_of_batches = new_number_of_batches + 1 ;
+   }
+  }
+console.log(new_number_of_batches)
+console.log(number_of_batches)
+
+
+// to check if the replicates are equal
+const allEqual = arr => arr.every( v => v === arr[0] )
+let countreps = [];
+for (let i = 1; i <= new_number_of_batches; i++){
+  let sample_div = document.querySelector(`#samples-${i}`);
+  if(sample_div.childNodes.length > 0 )
+    countreps.push(sample_div.childNodes.length);
+}
+let allEq = allEqual( countreps )
+if (allEq == false){
+alert("please check if the number of samples are same in each container");
+throw new Error("please check if the number of samples are same in each container");
+}
+
+// doing the same for control sample
+let countrepsCtl = [];
+for(let j = 1; j<= new_number_of_batches; j++){
+let control_div = document.querySelector(`#control-${j}`);
+  if(control_div.childNodes.length > 0 )
+    countrepsCtl.push(control_div.childNodes.length);
+}
+
+if (allEqual( countrepsCtl ) == false){
+alert("please check if the number of samples are same in each container");
+throw new Error("please check if the number of samples are same in each container");
+}
+
+
+for (let i = 1; i <= new_number_of_batches; i++){
+  let sample_div = document.querySelector(`#samples-${i}`)
+  if(sample_div.childNodes.length > 0){
+  for (let index = 0; index < sample_div.childNodes.length; index++){
+      abdSample= sample_div.childNodes[index];
+      value = abdSample.textContent;
+      abdarray.push(value);
+    }
+    sampleJoinedAbdarray = abdarray.join("RepsepRatTor")
+    fornameSample.push(abdarray)
+  }
+
+sample_data.push(sampleJoinedAbdarray);
+abdarray = [];
+}
+let sample_data_return = sample_data.join("SaMpSepeR")
+
+for(let j = 1; j<= new_number_of_batches; j++){
+let control_div = document.querySelector(`#control-${j}`)
+if(control_div.childNodes.length > 0){
+  for(let x = 0; x < control_div.childNodes.length; x++){
+    abdControl = control_div.childNodes[x];
+    controlValue = abdControl.textContent;
+    controlAbdarray.push(controlValue);
+  }
+  controlJoinedAbdarray = controlAbdarray.join("RepsepRatTor")
+    fornameControl.push(controlAbdarray)
+}
+controlData.push(controlJoinedAbdarray);
+controlAbdarray = [];
+}
+let control_data_return = controlData.join("SaMpSepeR")
+
+let newSamps = []
+let newContl = []
+
+for (i = 0;i<fornameSample.length;i++){
+  newSamps.push(fornameSample[i].sort())
+}
+
+
+for (i = 0;i<fornameControl.length;i++){
+  newContl.push(fornameControl[i].sort())
+}
+
+let numbOfSamp = newSamps[0].length;
+let numbOfCont = newContl[0].length;
+let eachBatch = [];
+let finalSamps = [];
+let finalContrl = [];
+
+let samps = [];
+
+for(let i=0;i < numbOfSamp;i++){
+  for(let j =0;j<newSamps.length;j++)
+  {
+    samps.push(newSamps[j][i]);
+  }
+  finalSamps.push(samps);
+  samps = [];
+}
+
+let cntrls = [];
+
+
+for(let i=0;i < numbOfCont;i++){
+  for(let j =0;j<newContl.length;j++)
+  {
+    cntrls.push(newContl[j][i]);
+  }
+  finalContrl.push(cntrls);
+  cntrls = [];
+}
+
+let sampleNames = namingFunction(finalSamps);
+let controlNames = namingFunction(finalContrl);
+let namingSamp = document.getElementById("naming-div-samp")
+
+if (namingSamp.hasChildNodes()){
+    namingSamp.innerHTML = '';
+  }
+
+
+for(let i= 0 ;i<sampleNames.length;i++)
+{
+  var input = document.createElement('input');
+  input.type = "text";
+  input.classList.add("form-control","m-2");
+  input.value = sampleNames[i];
+  namingSamp.appendChild(input)
+  // let frm = document.querySelector(".form-control")
+  console.log(namingSamp)
+//   frm.addEventListener('keyup', function(){
+
+//   })
+}
+
+let namingCont = document.getElementById("naming-div-cont")
+
+if (namingCont.hasChildNodes()){
+    namingCont.innerHTML = '';
+  }
+
+
+for(let i= 0 ;i<controlNames.length;i++)
+{
+
+  var input = document.createElement('input');
+  input.type = "text";
+  input.classList.add("form-control","m-2");
+  input.value = controlNames[i];
+  namingCont.appendChild(input)
+}
+
+document.querySelector('#final_sample_data').value = sample_data_return;
+document.querySelector('#final_control_data').value = control_data_return;
+
+hidForm.style.display = 'block';
+document.querySelector('#main-cont').style.opacity = 0.02;
+
+});
+
+
+document.querySelector('#normDone').addEventListener('click', function() {
+const hiddenNameDiv = document.getElementById('hidden-naming-div');
+const hidForm = document.getElementById('hidden-from');
+hidForm.style.display = 'none';
+hiddenNameDiv.style.display = 'block';
+});
+
+document.querySelector('#submit').addEventListener('click', function() {
+
+  let sampleNamesFinal = [];
+let controlNamesFinal = [];
+let names;
+let sampNames = document.querySelector('#naming-div-samp');
+
+console.log(sampNames.childNodes.length)
+
+for (let i = 0; i < sampNames.childNodes.length; i++)
+    {
+      let nameForms = sampNames.childNodes[i];
+
+      names = nameForms.value;
+      sampleNamesFinal.push(names);
+    }
+
+let contNames = document.querySelector('#naming-div-cont')
+
+  for (let i = 0; i < contNames.childNodes.length; i++)
+    {
+      let nameForms = contNames.childNodes[i];
+      names = nameForms.value;
+      controlNamesFinal.push(names);
+    }
+
+    //try
+//  let name = [sampleNamesFinal, controlNamesFinal]
+
+
+//  if(name !== names){
+//   alert("POP UP")
+//   return 
+//  }
+//  console.log(name)
+
+
+
+  console.log(sampleNamesFinal)
+  console.log(controlNamesFinal)
+
+
+let sampNameReturn = sampleNamesFinal.join("ZohaNSP");
+let contrlNameReturn = controlNamesFinal.join("ZohaNSP");
+
+document.querySelector('#final_sample_name').value = sampNameReturn;
+document.querySelector('#final_control_name').value = contrlNameReturn;
+
+});
+
+const closeNormBtn = document.getElementById("close-norm-btn");
+const closeNamingBtn = document.getElementById("close-name-btn");
+const hidForm = document.getElementById('hidden-from');
+const namingDiv = document.getElementById('hidden-naming-div');
+
+closeNormBtn.addEventListener('click',function(){
+hidForm.style.display = 'none';
+document.querySelector('#main-cont').style.opacity = 1;
+});
+
+closeNamingBtn.addEventListener('click',function(){
+namingDiv.style.display = 'none';
+document.querySelector('#main-cont').style.opacity = 1;
+});
+
+
+
+
+</script>
+
+{% endblock %}

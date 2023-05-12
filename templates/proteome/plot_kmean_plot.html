@@ -1,0 +1,259 @@
+{% extends 'proteome/base.html' %}
+{% block content %}   
+
+<style>
+    #elbow-hidden-div{
+    width: 70%;
+    height: 70%;
+    background-color: white;    
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+</style>
+
+
+<div class="conatiner-fluid" onload="myFunction()" id="unq">
+    <div class="row">
+        <div class="col col-xl-2 col-lg-2">
+            <div class="d-flex justify-content-center form-inline">
+
+                <div class="d-flex justify-content-center">
+
+                    <form id = "heatmap-form">
+
+                    {% csrf_token %}
+                    <div class="wrap shadow">
+                    <div class="sidebar">
+
+                        <ul>
+                            <li>
+                                <a href="#">
+                                    <div class="row d-flex justify-content-start">
+                                    <div class="col d-flex justify-content-start">
+                                        <label for="cutOff">Apply cut off</label>
+                                        <input class="ms-3 form-check-input" type="checkbox" name="cut-off" id="cutOff" value="cutoff">
+                                    </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <div id ="cut-off-div" class="hidden">
+                                <a href="#">
+						 
+                                    <div class="row d-flex justify-content-center">
+                                        <label for="left">Downregualted cut off</label>   
+                                        <input type="text" id = "left" name="left" style="width: 14ch;" value="0.67">
+                                      </div>
+                                </a></div>
+                            </li>
+                            <li>
+                                <div id ="cutt-off-div" class="hidden">
+                                <a href="#">
+						 
+                                    <div class="row d-flex justify-content-center">
+                                       <label for="right">Upregualted cut off</label>   
+                                        <input type="text" id = "right" name="right" style="width: 14ch;" value="1.5">
+                                      </div>
+                                </a></div>
+                            </li>
+
+
+                            <li>
+                                <a href="#">
+                                    <div class="row d-flex justify-content-center">
+                                         <label for="select-index"> Select index:</label>
+                                    <div class="select">
+                                        <select aria-label="Default select example" id = "index">
+                                            {% for column in columns %}
+                                             <option value="{{ columns }}">{{ column }}</option>
+                                            {% endfor %}
+                                        </select>
+                                      </div>
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li>
+                                <br><input type="submit" name="submit" class="mb-4 mx-5 btn btn-lg btn__primary">
+                            </li>
+                           
+                          </ul>
+
+                    </div>
+                    </div>  
+              </form>
+            </div>
+        </div>
+    </div>
+    
+     <div class="mt-3 col col-xl-10 col-lg-10 d-flex justify-content-center">
+            <h5 class="mt-2 hidden" id="upsethead"><u>K-means cluster Heatmap</u></h5>
+            <div class="controlplot d-flex">
+                <div class="wrapperplot hidden" style="border: 3px solid grey;" id="wrap">
+                    <div class="allow-scrollplot d-flex justify-content-center">
+                   
+                        <div id="k-means-plot-div"></div>
+
+
+                    </div>
+                </div>
+                    <div class="ms-3 download-plot-div hidden" id="downplot" style="top: 87vh; left: 186vh;">  
+                    <a class="download" href="" id ="download-href" download= "k-Means plot.svg">
+                    <button type="button" class="btn btn-sm btn-outline-primary"> <small>.SVG</small>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                        <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                        </svg>
+                    </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="loading hidden" id="loading">
+    <div class="loading-1"></div>
+    <div class="loading-2"></div>
+    <div class="loading-3"></div>
+    <div class="loading-4"></div>
+  </div>
+
+    <div class="container hidden" id = "elbow-hidden-div">
+        <div class="row">
+          <div class="col col-xl-12 col-lg-12">
+            <div class="m-2 ps-5 pe-3 pb-5 shadow" style="border:1px inset #6d5dfc; border-radius: 10px;">
+     
+     
+                <div id="elbowmap-div" class="d-flex justify-content-center"></div>
+
+                <div>
+                    <form id="elbow-from">
+                    <p> By using Elbow method this plot has been genrated . please look for the first sudden change
+                        in the above figure and mention the number of clusters</p>
+                    <label class="m-3"> Number of clusters:</label>
+                    <input type="number" name="no-of-cluster" id="noOfCluster" style="width: 10ch; max-width: 100%;">
+                    <input type="submit" name="submit" class="btn btn__primary">
+                    </form>
+                </div>
+
+        
+             </div>
+          </div>
+        </div>
+      </div>
+
+<script>
+
+const downloadplotdiv = document.getElementById("download-plot-div");
+const elbowHiddendiv = document.getElementById("elbow-hidden-div");
+const form = document.getElementById('heatmap-form');
+    const cutOff = document.getElementById('cutOff');
+    const cutoffDiv = document.getElementById("cut-off-div");
+    const wra = document.getElementById('wrap');
+    const downloadHref = document.getElementById('download-href');
+
+    var doCutoff;
+    cutOff.addEventListener("change", function() {
+    if (cutOff.checked){
+    cutoffDiv.classList.remove('hidden');
+    doCutoff = true;
+    }
+    else
+    {
+        cutoffDiv.classList.add('hidden');
+        doCutoff = false;
+
+    }
+});
+
+
+    form.addEventListener('submit', e=>{
+
+        e.preventDefault()
+        const csrf = document.getElementsByName('csrfmiddlewaretoken');
+        
+
+        const se = document.getElementById('index');
+        var index = se.options[se.selectedIndex].text;
+        const left = document.getElementById('left').value;
+        const right = document.getElementById('right').value;
+
+        const fd = new FormData()
+        fd.append('csrfmiddlewaretoken', csrf[0].value)
+        fd.append('index',index)
+        fd.append('left',left)
+        fd.append('right',right)
+
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'proteome:plot_elbow_plot' %}",
+            enctype: 'multipart/form-data',
+            data: fd,
+            success : function(data){
+            $('#elbowmap-div').html(`<img src="data:image/svg+xml;base64,${data.elbowmap}">`);
+                elbowHiddendiv.classList.remove('hidden');
+
+                },
+    
+            error: function(error){
+                console.log(error)
+            },
+            cache: false,
+            contentType: false,
+            processData: false,
+            });
+    });
+    
+    const elbowFrom = document.getElementById('elbow-from');
+
+    elbowFrom.addEventListener('submit', e=>{
+        e.preventDefault()
+        const csrf = document.getElementsByName('csrfmiddlewaretoken');
+        const se = document.getElementById('index');
+        var index = se.options[se.selectedIndex].text;
+        const left = document.getElementById('left').value;
+        const right = document.getElementById('right').value;
+        const noOfCluster = document.getElementById('noOfCluster').value;
+
+            const fd = new FormData()
+            fd.append('csrfmiddlewaretoken', csrf[0].value)
+            fd.append('index',index)
+            fd.append('left',left)
+            fd.append('right',right)
+            fd.append('noOfCluster',noOfCluster)
+
+                $.ajax({
+                    type: 'POST',
+                    url: "{% url 'proteome:plot_kmeans_plot' %}",
+                    enctype: 'multipart/form-data',
+                    data: fd,
+                    success : function(data){
+                    $('#k-means-plot-div').html(`<img src="data:image/svg+xml;base64,${data.heatmap}" style="max-width:100%; max-height:100;">`);
+                    downloadHref.setAttribute("href",`data:image/svg+xml;base64,${data.heatmap}`);
+                    wra.classList.remove('hidden');
+                    elbowHiddendiv.classList.add('hidden');
+                    downloadplotdiv.classList.remove('hidden');
+                        },
+
+                    error: function(error){
+                        console.log(error)
+                        wra.classList.remove('hidden');
+                    elbowHiddendiv.classList.add('hidden');
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    });
+                });
+
+
+
+</script>
+
+{%  endblock %}

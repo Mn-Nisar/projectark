@@ -1,0 +1,313 @@
+{% extends 'proteome/base.html' %}
+{% block content %}   
+
+<div class="container-fluid" onload="myFunction()" id="unq">
+    <div class="row">
+        <div class="col col-xl-2 col-lg-2">
+            <div class="d-flex justify-content-center">
+
+             <form id= "form" >
+                    {% csrf_token %}
+
+                   <div class="wrap shadow">
+
+                    <div class="sidebar">
+  
+                <p class="m-4"> Select fields </p>
+  
+                {% for column in columns %}
+                <div class="m-4 form-check">
+                    <input class="form-check-input" type="checkbox" value="{{ column }}" id = "{{ column }}" name = "fields-histogram" >
+                    <label class="form-check-label" for="{{ column }}">
+                      {{ column }}
+                    </label>
+                </div>
+              {% endfor %}
+  
+    
+  
+              <input type="submit" name="submit" class="ms-4 mt-3 btn btn-lg btn__primary">
+                </div></div>
+
+              </form>
+            </div>
+        </div>
+    
+
+        <div class="mt-3 col col-xl-10 col-lg-10 d-flex justify-content-center">
+            <h5 class="mt-2 hidden" id="upsethead"><u>Histogram</u></h5>
+            <div class="controlplot d-flex">
+            <div class="wrapperplot hidden" style="border: 3px solid grey;" id="wrap">
+                <div class="allow-scrollplot d-flex justify-content-center">
+                <div id="histogram-plot-div" class="mt-5 d-flex justify-content-center"></div></div></div>
+                <div class="ms-3 download-plot-div hidden" id="downplot" style="top: 87vh; left: 186vh;">  
+                    <a class="download" href="" id ="download-href" download= "Histogram plot.svg">
+                    <button type="button" class="btn btn-sm btn-outline-primary"> <small>.SVG</small>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                        <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                        </svg>
+                    </button>
+                    </a>
+                </div>
+ 
+            </div>
+        </div>
+    </div>
+    <div class="row d-flex justify-content-center">
+        <div class="col col-lg-9 col-xl-9 hidden" id="colorDiv"  style="position: absolute;top: 25vh;left: 70vh;">
+                <div class="shadow" style="width: 80vh;height: 60vh;background-color: rgb(255, 255, 255);">
+                    <div class="p-3 d-flex justify-content-end">
+                        <button type="button" class="btsn" id = "close-norm-btn">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                            </svg>
+                        </button>
+                      </div>
+                      <form id="formsec">
+                        <div class="m-2 ms-5">
+                            <!-- <label for="favcolor" class="ms-5 mt-2">Select the required color:</label>
+                            <input type="color" id="favcolor" name="favcolor" value="#ff0000"><br><br> -->
+                            <label for="colorable-elements" class="ms-5"  style="display: inline-block;"></label>
+                            <br>
+                            <div class="row">
+                                <div class="col col-lg-12 col-xl-12 hidden">
+                                    <select id="colorable-elements" name="colorable-elements[]" multiple>
+                                        <option value="">Select Elements</option>
+                                    </select>
+                                </div>
+                                <div class="col col-lg-12 col-xl-12 justify-content-center">
+                                    <div class="px-5 pt-1 colorable-container justify-content-end"></div>
+                                </div>
+                            </div>
+                            <br><br>
+                            <button type="button" id="apply-colors" class="ms-5 btn btn__primary">Apply Colors</button>
+                        </div>
+                    </form>
+                </div>
+        </div>
+    </div>
+</div>
+
+<div class="loading hidden" id="loading">
+    <div class="loading-1"></div>
+    <div class="loading-2"></div>
+    <div class="loading-3"></div>
+    <div class="loading-4"></div>
+  </div>
+
+
+<button type="button" class="hidden btn btn-sm btn-outline-secondary" id="colorPick">Click to change color </button>
+
+<script>
+    const form = document.getElementById('form');
+    const graphh = document.getElementById('loading');
+    const back = document.getElementById('unq');
+    const wrapp = document.getElementById('wrap');
+    const downPlot = document.getElementById('downplot');
+    const histHead = document.getElementById('upsethead');
+    const downloadHref = document.getElementById('download-href');
+    const colorPick = document.getElementById('colorPick');
+    const colorDiv = document.getElementById('colorDiv');
+    const closeNormBtn = document.getElementById("close-norm-btn");
+    const secForm = document.getElementById('formsec');
+
+
+
+    closeNormBtn.addEventListener('click',function(){
+        colorDiv.classList.add('hidden');
+        wrapp.classList.remove('blur');
+        if (container.hasChildNodes()) {
+    container.innerHTML = "";
+  }
+  
+  
+if (selectElement.hasChildNodes()) {
+    colorableElements.length = 0;
+  }
+});
+    secForm.addEventListener('submit', e=>{
+        const selectedColor = document.getElementById("favcolor").value;
+        console.log(selectedColor);
+
+    })
+
+
+
+    form.addEventListener('submit', e=>{
+
+        e.preventDefault()
+        const csrf = document.getElementsByName('csrfmiddlewaretoken');
+
+
+        checkboxes = document.getElementsByName("fields-histogram");
+        fieldsHistogram = Array.prototype.slice.call(checkboxes).filter(ch => ch.checked==true).map(ch => ch.value);
+
+        const fd = new FormData()
+        fd.append('csrfmiddlewaretoken', csrf[0].value)
+        fd.append('fields-histogram',fieldsHistogram)
+        graphh.style.display = 'block';
+        back.classList.add("blur"); 
+        
+            $.ajax({
+            type: 'POST',
+            url: "{% url 'proteome:plot_histogram_plot' %}",
+            enctype: 'multipart/form-data',
+            data: fd,
+            success : function(data){
+            $('#histogram-plot-div').html(`<img src="data:image/svg+xml;base64,${data.histogram}">`);
+            downloadHref.setAttribute("href",`data:image/svg+xml;base64,${data.histogram}`);
+
+            graphh.style.display = 'none';
+            back.classList.remove("blur"); 
+            wrap.classList.remove("hidden");
+            downPlot.classList.remove('hidden');
+            histHead.classList.remove('hidden');
+            colorPick.classList.remove('hidden');
+            // console.log(fieldsHistogram.length);
+            const fieldValue = fieldsHistogram.length;
+
+
+                },
+    
+            error: function(error){
+                console.log(error)
+                graphh.style.display = 'none';
+                back.classList.remove("blur"); 
+                alert('Oops Something went wrong !!');
+            },
+            cache: false,
+            contentType: false,
+            processData: false,
+            });
+        
+    });
+
+const selectElement = document.getElementById("colorable-elements");
+const container = document.querySelector(".colorable-container");
+
+colorPick.addEventListener('click', function(){
+  colorDiv.classList.remove('hidden');
+  wrapp.classList.add('blur');
+
+  const checkboxes = document.getElementsByName("fields-histogram");
+  const fieldsHistogram = Array.prototype.slice.call(checkboxes)
+    .filter(ch => ch.checked==true)
+    .map(ch => ch.value);
+  
+  const numFromBackend = fieldsHistogram.length;
+  console.log(numFromBackend);
+
+var colorableElements = Array.from({ length: numFromBackend }, (_, index) => {
+  const el = document.createElement("div");
+  el.classList.add("colorable", "colorable-" + (index + 1));
+
+  const label = document.createElement("label");
+  label.textContent = "Choose colour for Treatment " + (index + 1) + " :  ";
+
+  const colorInput = document.createElement("input");
+  colorInput.type = "color";
+  colorInput.value = "#ff0000"; // default color
+  colorInput.classList.add("color-picker");
+
+  el.appendChild(label);
+  el.appendChild(colorInput);
+  container.appendChild(el);
+
+  const option = document.createElement("option");
+  option.value = ".colorable-" + (index + 1);
+  option.textContent = "Element " + (index + 1);
+  selectElement.appendChild(option);
+
+  return {element: el, colorInput: colorInput};
+});
+
+
+document.getElementById("apply-colors").addEventListener("click", () => {
+  const selectedElements = Array.from(selectElement.selectedOptions, option => option.value);
+
+  colorableElements.forEach(element => {
+    if (selectedElements.includes("." + element.element.classList[0])) {
+      const colorInput = element.colorInput;
+      element.element.style.backgroundColor = colorInput.value;
+    }
+  });
+  
+var colorValues = colorableElements.map(element => element.colorInput.value);
+
+const colorInputs = document.querySelectorAll(".color-picker");
+colorInputs.forEach((input, index) => {
+  input.addEventListener("change", () => {
+    colorValues[index] = input.value;
+    // apply the updated color to the selected element immediately
+    const selectedElement = selectElement.value;
+    if (selectedElement === `.colorable-${index + 1}`) {
+      const element = colorableElements[index].element;
+      element.style.backgroundColor = input.value;
+    }
+  });
+});
+
+if (container.hasChildNodes()) {
+    container.innerHTML = "";
+  }
+  
+  
+if (selectElement.hasChildNodes()) {
+    colorableElements.length = 0;
+  }
+  const csrf = document.getElementsByName('csrfmiddlewaretoken');
+
+
+
+const fd = new FormData()
+fd.append('csrfmiddlewaretoken', csrf[0].value)
+fd.append('fields-histogram',fieldsHistogram)
+fd.append('colorValues',colorValues)
+graphh.style.display = 'block';
+back.classList.add("blur"); 
+
+    $.ajax({
+    type: 'POST',
+    url: "{% url 'proteome:plot_histogram_plot' %}",
+    enctype: 'multipart/form-data',
+    data: fd,
+    success : function(data){
+    $('#histogram-plot-div').html(`<img src="data:image/svg+xml;base64,${data.histogram}">`);
+    downloadHref.setAttribute("href",`data:image/svg+xml;base64,${data.histogram}`);
+
+    graphh.style.display = 'none';
+    back.classList.remove("blur"); 
+    wrap.classList.remove("hidden");
+    downPlot.classList.remove('hidden');
+    histHead.classList.remove('hidden');
+    colorPick.classList.remove('hidden');
+    // console.log(fieldsHistogram.length);
+    const fieldValue = fieldsHistogram.length;
+    colorDiv.classList.add('hidden');
+    wrapp.classList.remove('blur');
+
+
+        },
+
+    error: function(error){
+        console.log(error)
+        graphh.style.display = 'none';
+        back.classList.remove("blur"); 
+        alert('Oops Something went wrong !!');
+        colorDiv.classList.add('hidden');
+        wrapp.classList.remove('blur');
+    },
+    cache: false,
+    contentType: false,
+    processData: false,
+    });
+    console.log(colorValues);
+  });
+});
+
+ 
+
+</script>
+
+{%  endblock %}

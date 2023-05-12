@@ -1,0 +1,775 @@
+{% extends 'proteome/base.html' %}
+{% block content %}
+
+
+<style type="text/css">
+
+.dragging{
+    opacity: 0.5;
+}
+
+div::-webkit-scrollbar{
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+div::-webkit-scrollbar-track{
+  background:#D3D3D3;
+}
+
+div::-webkit-scrollbar-thumb{
+  background:#B0E0E6;
+}
+div[class^="samples"]::-webkit-scrollbar{
+  width: 0.2rem;
+  height: 0.2rem;
+
+}
+
+#sample-container {
+  /*width: 100%;*/
+  display: flex;
+  margin: 10px;
+  flex-wrap: wrap;
+}
+
+#control-container {
+  /*width: 100%;*/
+  display: flex;
+  margin: 10px;
+  flex-wrap: wrap;
+}
+
+div[class^="samples"]
+ {
+  overflow-y: scroll;
+  margin: 10px;
+  width: 170px;
+  height: 200px;
+  border:2px solid black;
+
+  }
+
+
+
+.abdlistcolumn{
+  position: absolute;
+    overflow: hidden;
+  height:77%;
+  width:20%;
+
+}
+
+.wrapper1
+{
+    margin: 1%;
+  width: 100%;
+  height:100%;
+}
+
+
+.allow-scroll1 {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    overflow-y: scroll;
+    overflow-x: scroll;
+}
+
+.control-and-sample
+{
+  position: absolute;
+  overflow: hidden;
+  left:25%;
+  height:77%;
+  width:70%;
+}
+
+.wrapper{
+  width: 100%;
+  height:100%;
+}
+
+.allow-scroll{
+    position: relative;
+    height: 100%;
+    width: 100%;
+    overflow-y: scroll;
+    overflow-x: scroll;
+}
+
+
+.radiogroup {
+  padding: 27px 36px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow:
+    4px 4px 4px 0px #a29ae1 inset,
+    -4px -4px 4px 0px #9b97c1 inset;
+}
+
+
+.wrappers {
+  margin: 8px 0;
+}
+
+.state {
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: 1e-5;
+  pointer-events: none;
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  color: #000;
+}
+
+.text {
+  margin-left: 16px;
+  /* opacity: .6; */
+  transition: opacity .2s linear, transform .2s ease-out;
+}
+
+.indicator {
+  position: relative;
+  border-radius: 50%;
+  height: 30px;
+  width: 30px;
+  box-shadow:
+    -8px -4px 8px 0px #ffffff,
+    8px 4px 12px 0px #d1d9e6;
+  overflow: hidden;
+}
+
+.indicator::before,
+.indicator::after {
+  content: '';
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  height: 80%;
+  width: 80%;
+  border-radius: 50%;
+}
+
+.indicator::before {
+  box-shadow:
+    -4px -2px 4px 0px #6d5dfc,
+    4px 2px 8px 0px #6d5dfc;
+    background-color: #6d5dfc;
+}
+
+.indicator::after {
+  background-color: #ecf0f3;
+  box-shadow:
+    -4px -2px 4px 0px #fff,
+    4px 2px 8px 0px #d1d9e6;
+  transform: scale3d(1, 1, 1);
+  transition: opacity .25s ease-in-out, transform .25s ease-in-out;
+}
+
+.state:checked ~ .label .indicator::after {
+  transform: scale3d(.975, .975, 1) translate3d(0, 10%, 0);
+  opacity: 0;
+}
+
+.state:focus ~ .label .text {
+  transform: translate3d(8px, 0, 0);
+  opacity: 1;
+}
+
+.label:hover .text {
+  opacity: 1;
+  font-weight: bold;
+}
+
+.sample-legend{
+  font-size: small;
+  margin: 10px 10px 3px 10px;
+}
+
+.control-wrapper{
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+}
+
+
+</style>
+
+
+    <form action="{% url 'proteome:pvalues' %}" method="POST">
+      {% csrf_token %}
+          <div class="container">
+            <div class="mt-2 row">
+          <input type="hidden" id="no_of_sample" name="no_of_sample" value="{{ number_of_samples }}">
+          <input type="hidden"  id="no_of_control" name="no_of_control" value="{{ number_of_control }}">
+          <input type="hidden" id = "final_sample_data" name="final_sample_data">
+          <input type="hidden" id = "final_control_data" name="final_control_data">
+          <input type="hidden" id = "final_sample_name" name="final_sample_name">
+          <input type="hidden" id = "final_control_name" name="final_control_name">
+
+          <input type="hidden" id = "difex-flow" name="difex-flow" value="difex">
+
+          </div>
+      </div>
+
+<div class="mt-2 main-container" id="main-cont">
+
+  <div class="abdlistcolumn">
+    <div class="wrapper1">
+    <div class="allow-scroll1" id = "abdlistspace">
+      <p class="ml-5">
+        <u></u>
+      </p>
+       <ul>
+
+        {% for column in all_column %}
+
+      <li class="draggable bd-highlight  m-1" draggable ="true" type="text" name="samples" style="cursor: move; color: black;
+      background-color: #F0F8FF;list-style: none;
+        border:1px solid black;"> <small style="font-size: 12px;">{{ column }}
+        </small>
+      </li>
+
+       {% endfor %}
+     </ul>
+      </div>
+  </div>
+  </div>
+
+<div class="control-and-sample">
+
+  <div class="wrapper">
+    <div class="allow-scroll">
+
+      <div class="mx-3 d-flex justify-content-start"> <h4 class="h4 heading mx-2">Test samples</h4></div>
+
+      <div class="ml-1">
+      <small class="mx-2 text-muted">
+        Drag and drop replicates of samples in each sample box.
+      </small>
+    </div>
+
+          <div id="sample-container"> </div>
+          <div class="mx-3 d-flex justify-content-start"> <h4 class="h4 heading mx-2">Control samples</h4></div>
+          <div id="control-container"></div>
+    </div>
+  </div>
+
+</div>
+
+   <div>
+    <input style="margin-left: 180vh; margin-top: 78vh;" type="button" id="confirm" class="btn btn-lg btn__primary" value="Next >>">
+  </div>
+
+</div>
+
+
+<div class="container" id="hidden-naming-div" style="display: none;">
+<div class="container" style="position:absolute; top: 7rem;">
+
+    <div class="row d-flex justify-content-center">
+      <div class="col col-xl-7 col-l-7 justify-content-center">
+
+        <div class="radiogroup">
+            <div class="ms-4 mt-3">
+            <label>Rename Test Samples: </label>
+            <div id ="naming-div-samp" class="p-2" style="width: 90%;">
+
+          </div>
+            <label> Rename Control Samples: </label>
+
+          <div id ="naming-div-cont" class="p-2" style="width: 90%;">
+
+          </div>
+          </div>
+
+          
+          <div class="ms-4 mt-3">
+
+            <label> Select Protien Accession/ gene Column: </label>
+            <select class="mx-3 mt-2 form-select" aria-label="Default select example" name = "accession-col" style="width: 88%;">
+    
+                <option disabled selected value></option>
+                {% for col in accession_col %}
+                <option value="{{ col }}">{{ col }}</option>
+                {% endfor %}
+              </select>
+          </div>
+
+
+
+          <div>
+            <div class="mt-3 ms-4">
+              <div class="mx-3 row">
+                <div class="col col-xl-6">
+                  <div class="mt-3 wrappers">
+                    <input class="state" type="radio" name = "ratiolg2" value="ratio" id="ratio">
+                    <label class="label" for="ratio">
+                      <div class="indicator"></div>
+                      <span class="text">Fold change</span>
+                    </label>
+                    <div id="fcvalueDiv" style="display: none;">
+                      <div class="form-inline">
+                          <label class="ms-5">Upregulated:</label><input class="input-sm ms-4" type = "text" name="fc_right" value="1.5"
+                            style="width: 10ch; max-width: 100%;">
+                        </div>
+                        <div class="form-inline mt-1">
+                          <label class="ms-5">Downregulated:</label><input class="input-sm mx-1" type = "text" name="fc_left" value="0.67"
+                          style="width: 10ch; max-width: 100%;">
+                      </div>
+                    </div>
+      
+              </div></div>
+              <div class="col col-xl-5">
+                <div class="wrappers">
+                  <input class="state" type="radio" name = "ratiolg2" value="lg2" id="lg2" checked>
+                  <label class="label" for="lg2">
+                    <div class="indicator"></div>
+                    <span class="text">Log2(Fold change)</span>
+                  </label>
+        
+                    <div class="ml-3" id="logValueDiv">
+                          <label class="ms-5">Cut-off&nbsp;&nbsp;<b>±</b>:</label><input class="input-sm ml-4" type = "text" name="lg2cut" value="0.5"
+                          style=" margin-left:1ch;  width: 10ch; max-width: 100%;">
+                      </div>
+        
+                </div></div>
+              </div>
+            </div>
+          </div>
+
+
+
+
+
+          <div class="mt-3 ms-4">
+            
+            <h6 class="h6 form-group"><b>P-value Calculation:</b></h6>
+            <div class="form-group ms-2 mb-5">
+
+            <!-- <div class="mt-2 form-check">
+              <input class="form-check-input" type="radio" name="pvalue" value="weltch" checked>
+              <label class="form-check-label" for="ttest">
+                Welch’s t-test </label>
+
+              <div><small class="text-muted"> </small> </div>
+            </div>
+
+            
+            <div class="mt-2 form-check">
+              <input class="form-check-input" type="radio" name="pvalue" value="ttest">
+              <label class="form-check-label" for="ttest">
+                Standard independent two sample t-test  </label>
+
+              <div><small class="text-muted"> </small> </div>
+            </div>
+
+            <div class="mt-2 form-check">
+              <input class="form-check-input" type="radio" name="pvalue" value="anova">
+              <label class="form-check-label" for="anova">
+                One-way ANOVA
+                </label>
+                    <div> <small class="text-muted"> </small> </div>
+
+            </div>
+
+              <div class="mt-2 form-check">
+              <input class="form-check-input" type="radio" name="pvalue" value="2anova">
+              <label class="form-check-label" for="2anova">
+              2 Way Anova </label>
+
+              <div><small class="text-muted"> </small> </div>
+            </div> -->
+            <div class="mt-3 wrappers form-check">
+              <input class="state form-check-input" type="radio" name= "pvalue" id="weltch" value="weltch" checked>
+              <label class="label" for="weltch">
+                <div class="indicator"></div>
+                <span class="text"> Welch’s t-test</span>
+              </label>
+            </div>
+            <div class="wrappers form-check">
+              <input class="state form-check-input" type="radio" name= "pvalue" id="ttest" value="ttest">
+              <label class="label" for="ttest">
+                <div class="indicator"></div>
+                <span class="text">Standard independent two sample t-test</span>
+              </label>
+            </div>
+            <div class="wrappers form-check">
+              <input class="state form-check-input" type="radio" name= "pvalue" id="anova" value="anova">
+              <label class="label" for="anova">
+                <div class="indicator"></div>
+                <span class="text">One-way ANOVA</span>
+              </label>
+            </div>
+            <div class="wrappers form-check">
+              <input class="state form-check-input" type="radio" name= "pvalue" id="2anova" value="2anova">
+              <label class="label" for="2anova">
+                <div class="indicator"></div>
+                <span class="text"> 2 Way Anova </span>
+              </label>
+            </div>
+
+              <div class="mt-3 ms-4">  <label>P-Value Cut-off:</label>
+              <input class="input-sm" type="text" name="pv_cutoff" value="0.05" style="width: 10ch; max-width: 100%;">
+              <div class="col col-xl-12 col-l-12">
+                <div class="d-flex justify-content-end">
+                   <input class ="form-button btn btn-lg btn__primary mt-4" type="submit" name="Analyze" id="submit" >
+               </div>
+              </div>
+            </div>
+    
+          </div>
+
+
+
+
+          </div>
+      </div>
+      </div>
+
+
+
+
+    </div>
+    <div  class="spacer"> . </div>
+    </div>
+</form>
+
+
+
+<script type="text/javascript">
+'use strict';
+
+const mainCont = document.querySelector('#main-cont');
+const fcvalueDiv = document.getElementById('fcvalueDiv');
+
+const number_of_samples = Number(document.querySelector('#no_of_sample').value);
+const number_of_control = Number(document.querySelector('#no_of_control').value);
+
+console.log(number_of_samples)
+console.log(number_of_control)
+
+
+for(var i = 1; i <= number_of_samples ; ++i){
+
+    var para = document.createElement('p');
+    var node = document.createTextNode('Sample '+i+' and its replicates:');
+
+    para.appendChild(node);
+    para.classList.add('sample-legend');
+
+    var div = document.createElement('div');
+      div.id = `samples-${i}`;
+      div.classList.add('samples')
+
+    var wrapper = document.createElement('div');
+    wrapper.appendChild(para);
+    wrapper.appendChild(div);
+    wrapper.classList.add('control-wrapper');
+
+      document.getElementById('sample-container').appendChild(wrapper);
+
+    }
+
+
+for(var i = 1; i <= number_of_control ; ++i){
+
+
+    var para = document.createElement('p');
+    var node = document.createTextNode('control '+i+' and its replicates:');
+    para.appendChild(node);
+    para.classList.add('sample-legend');
+
+    var div = document.createElement('div');
+      div.id = `control-${i}`;
+      div.classList.add('samples')
+
+    
+    var wrapper = document.createElement('div');
+    wrapper.appendChild(para);
+    wrapper.appendChild(div);
+    wrapper.classList.add('control-wrapper');
+
+
+    document.getElementById('control-container').appendChild(wrapper);
+      // document.getElementById('control-container').appendChild(div);
+    }
+
+const draggables = document.querySelectorAll('.draggable');
+const containers = document.querySelectorAll('.samples');
+const abdlistspace = document.getElementById('abdlistspace');
+
+draggables.forEach(draggable =>{
+        cursor: "grabbing",
+
+    draggable.addEventListener('dragstart',() =>{
+        draggable.classList.add('dragging')
+        })
+    draggable.addEventListener('dragend',() =>{
+      draggable.classList.remove('dragging')
+      draggable.classList.add('inside-div')
+
+    })
+})
+
+containers.forEach(container => {
+      container.addEventListener('dragover', e => {
+      e.preventDefault()
+
+      const draggable = document.querySelector('.dragging')
+      container.appendChild(draggable)
+
+            });
+
+      abdlistspace.addEventListener('dragover', e => {
+      e.preventDefault()
+      const draggable = document.querySelector('.dragging')
+      abdlistspace.appendChild(draggable)
+            });
+});
+
+
+function longestCommonSubstring(str1, str2){
+    if (!str1 || !str2)
+        return {
+            length: 0,
+            sequence: "",
+            offset: 0
+        };
+
+    var sequence = "",
+        str1Length = str1.length,
+        str2Length = str2.length,
+        num = new Array(str1Length),
+        maxlen = 0,
+        lastSubsBegin = 0;
+
+    for (var i = 0; i < str1Length; i++) {
+        var subArray = new Array(str2Length);
+        for (var j = 0; j < str2Length; j++)
+            subArray[j] = 0;
+        num[i] = subArray;
+    }
+    var thisSubsBegin = null;
+    for (var i = 0; i < str1Length; i++)
+    {
+        for (var j = 0; j < str2Length; j++)
+        {
+            if (str1[i] !== str2[j])
+                num[i][j] = 0;
+            else
+            {
+                if ((i === 0) || (j === 0))
+                    num[i][j] = 1;
+                else
+                    num[i][j] = 1 + num[i - 1][j - 1];
+
+                if (num[i][j] > maxlen)
+                {
+                    maxlen = num[i][j];
+                    thisSubsBegin = i - num[i][j] + 1;
+                    if (lastSubsBegin === thisSubsBegin)
+                    {
+                        sequence += str1[i];
+                    }
+                    else 
+                    {
+                        lastSubsBegin = thisSubsBegin;
+                        sequence= ""; //clear it
+                        sequence += str1.substr(lastSubsBegin, (i + 1) - lastSubsBegin);
+                    }
+                }
+            }
+        }
+    }
+    return sequence;
+}
+
+
+function namingFunction(fornameSample) {
+
+var eachsamps = [];
+var newEachSamps = [];
+var finalNamesSamp = []
+var samp;
+
+for(var i = 0;i<fornameSample.length;i++)
+
+{
+  eachsamps = fornameSample[i]
+
+  for(var j=0;j<eachsamps.length;j++)
+  {
+    samp = eachsamps[j]
+    samp = samp.replace(/\n|\r/g, "");
+    samp = samp.replace('Abundances',"")
+    samp = samp.replace('abundances',"")
+    samp = samp.replace('Abundance',"")
+    samp = samp.replace('abundance',"")
+
+    samp = samp.replace(',',"")
+    newEachSamps.push(samp)
+  }
+
+  finalNamesSamp.push(longestCommonSubstring(newEachSamps[0],newEachSamps[1]))
+  newEachSamps = []
+  eachsamps = []
+}
+return finalNamesSamp;
+}
+
+
+let sampleNames = []
+let controlNames = []
+
+
+document.querySelector('#confirm').addEventListener('click', function() {
+
+let value;
+let abdSample;
+let abdarray = [];
+let sample_data = [];
+let sampleJoinedAbdarray = [];
+
+let controlValue;
+let abdControl;
+let controlAbdarray = [];
+let controlJoinedAbdarray = [];
+
+let controlData = [];
+
+let fornameSample = []
+let fornameControl = []
+
+for (let i = 1; i <= number_of_samples; i++){
+  let sample_div = document.querySelector(`#samples-${i}`)
+  if(sample_div.childNodes.length > 0){
+  for (let index = 0; index < sample_div.childNodes.length; index++){
+      abdSample= sample_div.childNodes[index];
+      value = abdSample.textContent;
+      abdarray.push(value);
+    }
+    sampleJoinedAbdarray = abdarray.join("RepsepRatTor")
+    fornameSample.push(abdarray)
+  }
+    sample_data.push(sampleJoinedAbdarray);
+abdarray = [];
+}
+
+let sample_data_return = sample_data.join("SaMpSepeR")
+
+
+for(let j = 1; j<= number_of_control; j++){
+let control_div = document.querySelector(`#control-${j}`)
+if(control_div.childNodes.length > 0){
+  for(let x = 0; x < control_div.childNodes.length; x++){
+    abdControl = control_div.childNodes[x];
+    controlValue = abdControl.textContent;
+    controlAbdarray.push(controlValue);
+
+  }
+  controlJoinedAbdarray = controlAbdarray.join("RepsepRatTor")
+  fornameControl.push(controlAbdarray)
+
+}
+controlData.push(controlJoinedAbdarray);
+controlAbdarray = [];
+}
+
+
+sampleNames = namingFunction(fornameSample);
+controlNames = namingFunction(fornameControl);
+
+
+for(let i= 0 ;i<sampleNames.length;i++)
+{
+  var input = document.createElement('input');
+  input.type = "text";
+  input.classList.add("form-control","m-2");
+  input.value = sampleNames[i];
+  let namingCont = document.getElementById("naming-div-samp")
+  namingCont.appendChild(input)
+}
+
+for(let i= 0 ;i<controlNames.length;i++)
+{
+
+  var input = document.createElement('input');
+  input.type = "text";
+  input.classList.add("form-control","m-2");
+  input.value = controlNames[i];
+  let namingCont = document.getElementById("naming-div-cont")
+  namingCont.appendChild(input)
+}
+
+let control_data_return = controlData.join("SaMpSepeR")
+document.querySelector('#final_sample_data').value = sample_data_return;
+document.querySelector('#final_control_data').value = control_data_return;
+
+document.querySelector('#main-cont').style.opacity = 0.02;
+
+const hiddenNameDiv = document.getElementById('hidden-naming-div');
+hiddenNameDiv.style.display = 'block';
+
+});
+
+
+document.querySelector('#submit').addEventListener('click', function() {
+
+const hiddenNameDiv = document.getElementById('hidden-naming-div');
+
+let sampleNamesFinal = [];
+let controlNamesFinal = [];
+let names;
+let sampNames = document.querySelector('#naming-div-samp');
+
+for (let i = 0; i < sampNames.childNodes.length; i++)
+    {
+      let nameForms = sampNames.childNodes[i];
+
+      names = nameForms.value;
+      sampleNamesFinal.push(names);
+    }
+
+let contNames = document.querySelector('#naming-div-cont')
+
+  for (let i = 0; i < contNames.childNodes.length; i++)
+    {
+      let nameForms = contNames.childNodes[i];
+      names = nameForms.value;
+      controlNamesFinal.push(names);
+    }
+
+let sampNameReturn = sampleNamesFinal.join("ZohaNSP");
+let contrlNameReturn = controlNamesFinal.join("ZohaNSP");
+
+document.querySelector('#final_sample_name').value = sampNameReturn;
+document.querySelector('#final_control_name').value = contrlNameReturn;
+
+});
+
+document.querySelector('#ratio').addEventListener('click', function() {
+const fcvalueDiv = document.getElementById('fcvalueDiv');
+const logValueDiv = document.getElementById('logValueDiv');
+fcvalueDiv.style.display = 'block';
+logValueDiv.style.display = 'none';
+
+});
+
+document.querySelector('#lg2').addEventListener('click', function() {
+const fcvalueDiv = document.getElementById('fcvalueDiv');
+const logValueDiv = document.getElementById('logValueDiv');
+
+fcvalueDiv.style.display = 'none';
+logValueDiv.style.display = 'block';
+});
+
+</script>
+
+{% endblock %}

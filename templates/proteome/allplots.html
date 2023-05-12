@@ -1,0 +1,544 @@
+{% extends 'proteome/base.html' %}
+{% load static %}
+{% block content %}   
+
+<style>
+
+  /* HIDE RADIO */
+[type=radio] { 
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* IMAGE STYLES */
+[type=radio] + img {
+  cursor: pointer;
+}
+
+/* CHECKED STYLES */
+[type=radio]:checked + img {
+  outline: 2px solid rgb(211, 174, 174);
+}
+
+  
+  .wrapper{
+    margin: 2vh;
+    /* border: 1px solid black ; */
+    /* border-radius: 10px; */
+  }
+
+
+  .plot-contain{
+    width: 80%;
+    max-width: 100%;
+    margin: 2rem;
+  }
+
+.plot-icon{
+
+max-width: 100%;
+align-items: center;
+padding: 10px;
+/* opacity: 0.5; */
+}
+
+.plot-icon:hover{
+  /* opacity:1; */
+  }
+
+.plot-label:hover {
+
+}
+
+.hidden{
+
+  display: none;
+}
+
+#file-div{
+    width: 40%;
+    height: 60%;
+    background-color: white;    
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+}
+tr:nth-child(even) {
+  background: #f1f7f8;  
+}
+th,
+td {
+  border: 1px solid #a0c8cf;
+  padding: .75rem;
+  text-align: center;
+}
+th {
+  background: #74afb9;
+  color: #fff;
+}
+td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.files input {
+    outline: 2px dashed #92b0b3;
+    outline-offset: -10px;
+    -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+    transition: outline-offset .15s ease-in-out, background-color .15s linear;
+    padding: 40px 0px 85px 35%;
+    text-align: center !important;
+    margin: 0;
+    width: 100% !important;
+}
+.files input:focus{     outline: 2px dashed #92b0b3;  outline-offset: -10px;
+    -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+    transition: outline-offset .15s ease-in-out, background-color .15s linear; border:1px solid #92b0b3;
+ }
+.files{ position:relative}
+.files:after {  pointer-events: none;
+    position: absolute;
+    top: 10;
+    left: 0;
+    width: 40px;
+    right: 0;
+    height: 30px;
+    content: "";
+    background-image: url(https://image.flaticon.com/icons/png/128/109/109612.png);
+    display: block;
+    margin: 0 auto;
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+.color input{ background-color:#f1f1f1;}
+.files:before {
+    position: absolute;
+    bottom: 3px;
+    left: 0;  pointer-events: none;
+    width: 100%;
+    right: 0;
+    height: 57px;
+    content: " or drag it here. ";
+    display: block;
+    margin: 0 auto;
+    color: #2ea591;
+    font-weight: 600;
+    text-transform: capitalize;
+    text-align: center;
+}
+
+/* card */
+.cards-list {
+  z-index: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.card {
+  margin: 40px auto;
+  width: 350px;
+  height: 350px;
+  border-radius: 10px;
+  box-shadow: 1px 1px 3px 2px rgba(0, 0, 0, 0.25),
+    -1px -1px 3px 2px rgba(0, 0, 0, 0.22);
+  cursor: pointer;
+  transition: 0.4s;
+}
+
+.card .card_image {
+  align-items: center;
+  width: inherit;
+  height: inherit;
+  border-radius: 20px;
+}
+
+.card .card_image img {
+  width: inherit;
+  height: inherit;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.card .card_title {
+  text-align: center;
+  border-radius: 0px 0px 40px 40px;
+  font-family: sans-serif;
+  /* font-weight: bold; */
+  font-size: 20px;
+  /* margin-top: -60px; */
+  /* height: 30px; */
+}
+
+.card:hover {
+  transform: scale(0.9, 0.9);
+  box-shadow: 10px 10px 20px 16px rgba(0, 0, 0, 0.25),
+    -10px -10px 20px 16px rgba(0, 0, 0, 0.22);
+}
+
+.title-white {
+  color: rgb(7, 3, 3);
+}
+
+.title-black {
+  color: black;
+
+}
+
+@media all and (max-width: 500px) {
+  .card-list {
+    /* On small screens, we are no longer using row direction but column */
+    flex-direction: column;
+  }
+}
+
+
+/* endcard */
+
+</style>
+
+
+
+<form action="{% url 'proteome:getplot' %}" method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+
+<div class="container" id = "main-div">
+  <div class="row">
+     <div class="col col-xl-4 col-lg-4">
+      <!-- <div class="wrapper d-flex justify-content-center shadow" style="border:1px inset #6d5dfc; border-radius: 10px;"> -->
+      <!-- <div class="plot-contain"> -->
+        <div class="cards-list">
+        
+        
+        <div class="card 1 shadow">
+          <div class="card_image"><label> <input type="radio" name="plot-radio" value="circbar" > 
+            <img class = "plot-icon" src="{% static 'proteome/plot/circbar_pnt.png' %}" alt="">  
+          </label> </div>
+          <div class="card_title title-white">
+            <p>Circular Bar plot </p>
+          </div>
+        </div>
+      </div>
+
+        <!-- </div> -->
+      <!-- </div> -->
+    </div>
+
+    <div class="col col-xl-4 col-lg-4"> 
+      <!-- <div class="wrapper d-flex justify-content-center shadow"style="height: 394px;border:1px inset #6d5dfc; border-radius: 10px;"> -->
+        <div class="cards-list">
+        <div class="card 1 shadow">
+          <div class="card_image"><label>
+                <input type="radio" name="plot-radio" value="volcano" >
+                <img class = "plot-icon" src="{% static 'proteome/plot/volcano.png' %}" alt="">  
+              </label> </div>
+          <div class="mt-3 card_title title-black">
+            <p>Volcano plot </p>
+          </div>
+        </div>    
+          </div>
+        <!-- </div> -->
+      </div>
+ 
+
+    <div class="col col-xl-4 col-lg-4">
+      <!-- <div class="wrapper d-flex justify-content-center shadow" style="border:1px inset #6d5dfc; border-radius: 10px;">
+      <div class="plot-contain"> -->
+        <div class="cards-list">
+        <div class="card 2 shadow">
+          <div class="card_image"> <label>
+                <input type="radio" name="plot-radio" value="pca" >
+                <img class = "plot-icon" src="{% static 'proteome/plot/PCA_pnt.png' %}" alt="">  
+              </label> </div>
+          <div class="card_title title-white">
+            <p>PCA plot </p>
+          </div>
+        </div>
+        </div>
+      <!-- </div>
+      </div> -->
+    </div>
+ </div>
+
+
+ <div class="row">
+  <div class="col col-xl-4 col-lg-4">
+    <div class="cards-list">
+    <div class="card 3 shadow">
+      <div class="card_image"> <label>
+         <input type="radio" name="plot-radio" value="rain" >
+         <img class = "plot-icon" src="{% static 'proteome/plot/rain_white_pnt.png' %}" alt="">  
+       </label> </div>
+      <div class="card_title title-white">
+        <p>Rain cloud Plot </p>
+      </div>
+    </div>
+ </div></div>
+
+ <div class="col col-xl-4 col-lg-4">
+  <div class="cards-list">
+  <div class="card 1 shadow">
+    <div class="card_image"> <label>
+       <input type="radio" name="plot-radio" value="maplot" >
+       <img class = "plot-icon" src="{% static 'proteome/plot/ma_plot.png' %}" alt="">  
+     </label> </div>
+    <div class="card_title title-white">
+      <p> MA plot </p>
+    </div>
+  </div>
+ </div>
+ </div>
+
+ <div class="col col-xl-4 col-lg-4">
+  <div class="card 1 shadow">
+    <div class="card_image"> <label>
+       <input type="radio" name="plot-radio" value="heatmap" >
+       <img class = "plot-icon" src="{% static 'proteome/plot/heatmap.png' %}" alt="">  
+     </label></div>
+    <div class="card_title title-white">
+      <p>Heatmap (Heirarchial cluster)</p>
+    </div>
+  </div>
+ </div>
+
+</div>
+
+<div class="row">
+  <div class="col col-xl-4 col-lg-4">
+    <div class="card 1 shadow">
+      <div class="card_image"><label>
+         <input type="radio" name="plot-radio" value="upset" >
+         <img class = "plot-icon" src="{% static 'proteome/plot/upset_pnt.png' %}" alt="">  
+       </label> </div>
+      <div class="card_title title-white">
+        <p>Upset plot </p>
+      </div>
+    </div>
+ </div>
+
+ <div class="col col-xl-4 col-lg-4">
+  <div class="card 1 shadow">
+    <div class="card_image">  <label>
+       <input type="radio" name="plot-radio" value="density" >
+       <img class = "plot-icon" src="{% static 'proteome/plot/density_grid.png' %}" alt="">  
+     </label> </div>
+    <div class="card_title title-white">
+      <p>Density plot</p>
+    </div>
+  </div>
+ </div>
+
+ <div class="col col-xl-4 col-lg-4">
+  <div class="card 1 shadow">
+    <div class="card_image">  <label>
+       <input type="radio" name="plot-radio" value="violin" >
+       <img class = "plot-icon" src="{% static 'proteome/plot/violin.png' %}" alt="">  
+     </label></div>
+    <div class="card_title title-white">
+      <p>Violin plot </p>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="row">
+  <div class="col col-xl-4 col-lg-4">
+    <div class="card 1 shadow">
+      <div class="card_image"> <label>
+         <input type="radio" name="plot-radio" value="box" >
+         <img class = "plot-icon" src="{% static 'proteome/plot/box_pnt.png' %}" alt="">  
+       </label></div>
+      <div class="card_title title-white">
+        <p>Box plot </p>
+      </div>
+    </div>
+ </div>
+
+ <div class="col col-xl-4 col-lg-4">
+  <div class="card 1 shadow">
+    <div class="card_image"><label>
+       <input type="radio" name="plot-radio" value="bubble" >
+       <img class = "plot-icon" src="{% static 'proteome/plot/bubble_white_pnt.png' %}" alt="">  
+     </label>
+</div>
+    <div class="card_title title-white">
+      <p>Bubble plot </p>
+    </div>
+  </div>
+ </div>
+
+ <div class="col col-xl-4 col-lg-4">
+  <div class="card 1 shadow">
+    <div class="card_image">  <label>
+       <input type="radio" name="plot-radio" value="histogram" >
+       <img class = "plot-icon" src="{% static 'proteome/plot.jpg' %}" alt="">  
+     </label></div>
+    <div class="card_title title-white">
+      <p>Histogram </p>
+    </div>
+  </div>
+</div>
+</div>
+
+
+
+<div class="row">
+  <div class="col col-xl-4 col-lg-4">
+    <div class="card 1 shadow">
+      <div class="card_image"> <label>
+         <input type="radio" name="plot-radio" value="scurve" >
+         <img class = "mt-3 ms-3 plot-icon" src="{% static 'proteome/plot/scurve.png' %}" alt="">  
+       </label>
+         
+  </div>
+      <div class="mt-3 card_title title-white">
+        <p>Scurve  </p>
+      </div>
+    </div>
+ </div>
+
+  
+ <div class="col col-xl-4 col-lg-4">
+  <div class="card 1 shadow">
+    <div class="card_image">  <label>
+       <input type="radio" name="plot-radio" value="venn" >
+       <img class = "plot-icon" src="{% static 'proteome/plot/venny_pnt_nmbr.png' %}" alt="">  
+     </label></div>
+    <div class="card_title title-white">
+      <p> Venn Diagram</p>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="col col-xl-4 col-lg-4">
+  <div class="card 1 shadow">
+    <div class="card_image"> <label>
+       <input type="radio" name="plot-radio" value="kmean" >
+       <img class = "plot-icon" src="{% static 'proteome/plot/heatmap.png' %}" alt="">  
+     </label></div>
+    <div class="card_title title-white">
+      <p>Heatmap (K-mean cluster)</p>
+    </div>
+  </div>
+ </div>
+
+
+
+</div>
+</div>
+
+  
+<div class="container hidden" id = "file-div">
+  <div class="row">
+    <div class="col col-xl-12 col-lg-12">
+      <div class="m-2 ps-5 pe-3 pb-5 shadow" style="border:1px inset #6d5dfc; border-radius: 10px;">
+
+        <div class="d-flex justify-content-end">
+          <button type="button" class="btn btn-sm btsn" id = "close-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                  <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+              </svg>
+          </button>
+        </div>
+
+        <div class="pe-5 form-group files"><br>
+
+         <div class="d-flex justify-content-center"> <label>Upload Your File </label> </div>
+          <br><input type="file" class="form-control" name = "file">
+        </div>
+
+
+        <div class="m-3" id ="ex-data-div"> </div>
+       
+        <div id = "download-link">
+          <a href="{% url 'proteome:down_plot_ex_data' %}"> 
+          <input type="button"  role="button"  class ="btn btn-success" value="Download Example data">
+         </a>
+      </div>
+
+         <div class="mt-4 d-flex justify-content-center">
+          <input type="button"  role="button"  class ="mt-3 btn btn-outline-success btn-sm" value="Load Example" id="load-example">
+          <input type="submit" value="submit" class="mt-3 ms-4 btn btn-lg btn__primary">
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</form>
+
+<script>
+
+const fileDiv = document.getElementById('file-div');
+const loadEx = document.getElementById('load-example');
+const radios = document.getElementsByName('plot-radio');
+const mainDiv = document.getElementById("main-div");
+const closeBtn = document.getElementById("close-btn");
+const downloadLink = document.getElementById("download-link");
+const exdataDiv = document.getElementById("ex-data-div");
+
+
+for(var i = 0, max = radios.length; i < max; i++) {
+    radios[i].onclick = function() {
+
+      fileDiv.classList.remove('hidden');
+      fileDiv.classList.add('animate__bounceIn');
+
+      mainDiv.classList.add('hidden'); 
+      downloadLink.classList.add("hidden");   
+      var plotType  = this.value;
+      console.log(plotType)
+      exdataDiv.innerHTML = ''; 
+      loadEx.onclick = function()
+      {
+        $.ajax({
+        type: 'get',
+        url: "{% url 'proteome:load_plot_example' %}",
+        data: { "plotType": plotType },
+        
+        success : function(data){
+          $('#ex-data-div').html(data.exData);
+          downloadLink.classList.remove("hidden");   
+
+                },
+        error: function(error){
+            console.log(error)
+        }
+        });
+    }
+
+    }
+}
+
+closeBtn.addEventListener('click', function() {
+  fileDiv.classList.add('hidden')
+  mainDiv.classList.remove('hidden');    
+}); 
+
+
+</script>
+
+
+
+
+
+
+
+
+{% endblock %}

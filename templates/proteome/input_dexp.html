@@ -1,0 +1,177 @@
+{% extends 'proteome/base.html' %}
+{% block content %}
+<style>
+  table {
+  border-collapse: collapse;
+  width: 100;
+  table-layout: fixed;
+}
+tr:nth-child(even) {
+  background: #f1f7f8;  
+}
+th,
+td {
+  border: 1px solid #a0c8cf;
+  padding: .75rem;
+  text-align: center;
+}
+th {
+  background: #74afb9;
+  color: #fff;
+}
+td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+</style>
+
+<div class="container" id="unq">
+    <div class="row">
+        <div class="col col-xl-12 col-lg-12">
+        <div class="d-flex justify-content-center">
+        <form method="POST" enctype="multipart/form-data" action="{% url 'proteome:inputf_dexp' %}" id="signup">
+
+        {% csrf_token %}
+
+      <div class="row d-flex justify-content-center">
+        <div class="col col-xl-9 col-lg-9 shadow p-5 mt-5" style="border:1px inset #6d5dfc; border-radius: 10px;">
+          <div class="m-3">
+        <label style="font-weight: bold;">Total number of Normalized Test Samples:</label>
+        <input type="number" class="mx-5" name="no_of_sample" id="inputtech" style="width: 10ch; max-width: 100%;">
+        <br> <small class="mx-4 mt-4 form-text text-muted">Mention total number of samples.
+        Replicates of each sample will be grouped in next page</small>
+          </div>
+          <div class="m-3">
+        <label class="mt-4" style="font-weight: bold;">Total number of Normalized control sample:&nbsp;&nbsp;</label>
+        <input type="number" class="mx-4" name="no_of_control" id="inputtech" value="1" style="width: 10ch; max-width: 100%;">
+       <br> <small class="mx-4 form-text text-muted">Mention total number of controls.
+        Replicates of each sample will be grouped in next page</small>
+      </div>
+        <div class="form-group m-3" id="filegrp">
+        <label class="mt-4" style="font-weight: bold;">Upload Your File:</label>
+          <input type="file" class="ms-5" name="file" required>
+          <br><small class="mx-4 form-text text-muted" >make sure the file is xlsx / csv / tab seperated txt file. Your data will be confidential , It will be stored temporarily and deleted after the analysis</small>
+        </div>
+
+        <div class="container">
+          <div id="hidDiv" class="hidden">
+          <div class="d-flex justify-content-center" style="overflow-x: scroll; overflow-y: scroll;">
+            <div class="ms-4 d-flex justify-content-center"><div id="ex-data-div" class="ms-5 d-flex justify-content-center shadow mb-3"></div></div> 
+            <input type="hidden" id="wokring-with-ex" name="wokring-with-ex">
+            </div>
+         </div>
+         <div class="d-flex justify-content-end">
+         <a href="{% url 'proteome:download_example_diffex' %}">
+          <button type="button" class="hidden btn btn-sm btn-success" id="downbtn">
+         <b> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+            </svg> </b><small>
+          &nbsp;&nbsp;Download(.csv)</small>
+        </button>
+        </a>
+        </div></div>
+
+        
+
+        <div class="d-flex justify-content-center mt-5"> 
+          <button id ="load-ex-btn" type="button" role="button" class="mt-3 me-3 btn btn-outline-success">Load example data</button><p class="mt-4"><i>or </i> </p> 
+          <button type="submit" class="mt-3 ms-3 btn btn__primary" style="width: 6rem; height: 3rem;">Submit</button> </div>
+      </div>
+      </div>
+
+        </form>
+      </div>
+    </div>
+    </div>
+</div>
+
+<div class="dna hidden" id="display">
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+</div>
+
+
+
+<script>
+
+const loadExbtn = document.getElementById('load-ex-btn');
+const wokringwithEx = document.getElementById('wokring-with-ex');
+const noSamples  = document.getElementById('inputtech');
+const dnaloader = document.getElementById('display');
+const contDiv = document.getElementById('unq');
+const Downbtn = document.getElementById('downbtn');
+const fileGrp = document.getElementById('filegrp');
+const hidDiv = document.getElementById('hidDiv');
+
+
+
+
+
+loadExbtn.addEventListener('click',e=>{
+wokringwithEx.value = "yes";
+dnaloader.style.display = 'block';
+// document.getElementById("unq").style.display='none';
+contDiv.classList.add("blur"); 
+
+  $.ajax({
+        type: 'get',
+        url: "{% url 'proteome:load_example_diffex' %}",
+          success : function(data){
+          $('#ex-data-div').html(data.exData);
+          console.log(data.samples)
+          noSamples.value = data.samples; 
+          Downbtn.classList.remove('hidden');
+          dnaloader.style.display = 'none';
+          document.getElementById("unq").style.display='block';
+          contDiv.classList.remove("blur"); 
+          fileGrp.classList.add('hidden');
+          hidDiv.classList.remove('hidden');
+
+
+        },
+        error: function(error){
+            console.log(error)
+            dnaloader.style.display = 'none';
+            document.getElementById("unq").style.display='block';
+            contDiv.classList.remove("blur"); 
+            alert("Oops Something went wrong");
+
+        }
+        });
+
+      });
+
+      $(document).ready(function(){
+      $('#signup').validate({
+        rules:{
+          no_of_sample:{
+            required:true,
+            minlength:1
+           }
+        }
+    })
+  });
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,291 @@
+{% extends 'proteome/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>:root {
+  --bg-color: radial-gradient(circle at center, #fff, #ccc);
+  --dot-color1:deepskyblue;
+  --dot-color2:#000;
+}
+
+.radiobtn label {
+    display: block;
+    background: rgba(0, 0, 0, 0.2);
+    color: #000;
+    border-radius: 5px;
+    padding: 10px 20px;
+    border: 2px solid rgb(194, 194, 194);
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
+.radiobtn label:after, .radiobtn label:before {
+    content: "";
+    position: absolute;
+    right: 11px;
+    top: 11px;
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    background:rgb(194, 194, 194);
+}
+
+.radiobtn label:before {
+    background: transparent;
+    transition: 0.1s width cubic-bezier(0.075, 0.82, 0.165, 1) 0s, 0.3s height cubic-bezier(0.075, 0.82, 0.165, 2) 0.1s;
+    z-index: 2;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    background-size: 13px;
+    background-position: center;
+    width: 0;
+    height: 0;
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNS4zIDEzLjIiPiAgPHBhdGggZmlsbD0iI2ZmZiIgZD0iTTE0LjcuOGwtLjQtLjRhMS43IDEuNyAwIDAgMC0yLjMuMUw1LjIgOC4yIDMgNi40YTEuNyAxLjcgMCAwIDAtMi4zLjFMLjQgN2ExLjcgMS43IDAgMCAwIC4xIDIuM2wzLjggMy41YTEuNyAxLjcgMCAwIDAgMi40LS4xTDE1IDMuMWExLjcgMS43IDAgMCAwLS4yLTIuM3oiIGRhdGEtbmFtZT0iUGZhZCA0Ii8+PC9zdmc+);
+}
+
+input[type="radio"] {
+    display: none;
+    position: absolute;
+    width: 100%;
+    appearance: none;
+}
+input[type="radio"]:checked + label {
+    background:rgb(185, 241, 183);
+    animation-name: blink;
+    animation-duration: 1s;
+ border-color: $accentcolor;
+}
+input[type="radio"]:checked + label:after {
+ background: $accentcolor;
+}
+input[type="radio"]:checked + label:before {
+    width: 20px;
+    height: 20px;
+}
+
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+}
+tr:nth-child(even) {
+  background: #f1f7f8;  
+}
+th,
+td {
+  border: 1px solid #a0c8cf;
+  padding: .75rem;
+  text-align: center;
+}
+th {
+  background: #74afb9;
+  color: #fff;
+}
+td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+</style>
+</style>
+
+  <div class="container d-flex justify-content-center" id="unq" style="display: block;">
+
+
+
+
+  <div class="container d-flex justify-content-center m-3" id="lablledBlock">
+
+  
+    <div class="ms-5 row d-flex justify-content-center">
+      <div class="col-xl-9 p-3 mt-4 ml-4 shadow d-flex justify-content-center" style="border:1px inset #6d5dfc; border-radius: 10px;">
+
+      <form action="{% url 'proteome:inputfile_lblfree' %}" method="POST" enctype="multipart/form-data" class="m-3" id="signup">
+        {% csrf_token %}
+
+        <div class="form-group">
+        <div class="ms-3 d-flex justify-content-start">
+          <label class="m-3" >Protein identification:</label>
+            <select class="form-select m-3 mx-5" name="prot_ident" style="width: 40%;">
+              <option value="iBAQ">iBAQ</option>
+              <option value="NSAF">NSAF</option>
+              <option value="TOP3">TOP3</option>
+            </select>
+        </div>
+
+          <div class="ms-3 d-flex justify-content-start">
+          <label class="m-3 my-3 mx-4">Enzyme:  </label> &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <select class="form-select m-3 ms-5 mx-5" name="enzyme" style="width: 30%;">
+              <option value="trypsin">Trypsin</option>
+              <option value="lysc">Lysc</option>
+              <option value="chymotrypsin">Chymotrypsin</option>
+            </select>
+        </div>
+
+        <br>
+        <div class="row" id="fastahid">
+        <div class="col col-xl-3 col-lg-3">
+          <label class="m-3 ms-4">Upload Fasta file:</label>
+        </div>
+        <div class="my-2 col col-xl-9 col-lg-9">
+         &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;<input type="file" name="fasta-file" id = "fasta-file-input" required>
+        </div>
+      </div>
+        <div class="m-3 my-5 row">
+          <div class="col col-xl-3">
+        <label  class="mt-2">Fasta file format:</label></div>
+        <div class="col">
+          <div class="radiobtn">
+              <input class="form-check-input" type="radio"  name = "fastsdb" for="ncbi" value="ncbi" id="ncbi" checked>
+              <label class="form-check-label" for="ncbi" style="text-align: center;">NCBI </label>
+              </div></div><div class="col">
+              <div class="radiobtn">
+                  <input class="ml-2 form-check-input" type="radio" name = "fastsdb" value="uniprot" id="uniprot">
+                  <label class="form-check-label" for="uniprot" style="text-align: center;">Uniprot</label>
+               </div></div>
+        </div>
+        </div>
+        <!-- change -->
+        <!-- <label class="form-check-label" for="ncbi"><b>NCBI</b>
+        </label>
+        <input class="form-check-input" type="radio" name = "fastsdb" value="ncbi" id="ncbi" checked>
+        </div>
+        <div class="col col-xl-4 form-check">
+
+        <input class="form-check-input" type="radio" name = "fastsdb" value="uniprot" id="uniprot">
+        <label class="form-check-label" for="uniprot"><b>Uniprot</b>
+        </label>
+        </div> -->
+   
+ 
+
+
+          <div class="d-flex justify-content-center form-inlie m-3">
+            <label for="missed_clevage">Missed Clevage :</label>  &nbsp; <input type="number" name="missed_clevage"  id = "missed_clevage" value="1" style="width: 8%;">&nbsp;&nbsp;&nbsp;
+            <label for="pep_min_len">Peptide Minimum length :</label> &nbsp;  <input type="number" name="pep_min_len"  id = "pep_min_len" value="6" style="width: 8%;">&nbsp;&nbsp;&nbsp;
+            <label for="pep_max_len">Peptide Maximum length :</label>  &nbsp; <input type="number" name="pep_max_len"  id = "pep_max_len" value="22" style="width: 8%;">&nbsp;&nbsp;&nbsp;
+          </div>
+          <br>
+
+        <div class="m-3 row">
+         
+         <div id ="upload-file-div" class="mb-4"><label >Upload Your File:</label>
+          <input type="file" name="file" required>
+         </div>
+         <div id="hidDiv" class="hidden">
+         <div class="d-flex justify-content-center" style="overflow-x: scroll; overflow-y: scroll;">
+           <div class="3d-flex justify-content-center"><div id="ex-data-div" class="d-flex justify-content-center shadow mb-3"></div></div> 
+            <input type="hidden" id="wokring-with-ex"  name="wokring-with-ex">
+          </div></div>
+
+      <div class="d-flex justify-content-center"> 
+        <button id ="load-ex-btn" type="button" role="button" class="mt-3 me-3 btn btn-outline-success">Load example data</button><p class="mt-4">or </p> 
+        <button type="submit" class="mt-3 ms-3 btn btn__primary">Submit</button> 
+   
+      </div>
+    </form>
+
+
+    
+
+<!-- 
+        <form action="{% url 'proteome:inputfile_lblfree' %}">
+
+        <div class="d-flex justify-content-center m-4">
+          &nbsp;&nbsp; <i style="font-weight: bold;text-orientation: upright; ">or</i> &nbsp;&nbsp;
+          <button type="submit" class="btn btn-sm btn-secondary">Run an Example Analysis</button>
+        </div>
+        </form> -->
+
+
+    <div>  </div>
+  </div>
+</div></div></div>
+
+</div>
+
+
+<div class="dna hidden" id="display">
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+  <div class="ele"></div>
+</div>
+
+<script type="text/javascript">
+const fastaSelect = document.getElementById('fasta-file-select');
+const fasta = document.getElementById('fastahid')
+const back = document.getElementById('unq');
+const dnaloader = document.getElementById('display');
+const loadExbtn = document.getElementById('load-ex-btn');
+const uploadFileDiv = document.getElementById('ex-data-div');
+const hidDiv = document.getElementById('hidDiv');
+const wokringwithEx = document.getElementById('wokring-with-ex');
+const body = document.getElementsByTagName("BODY")[0];
+loadExbtn.addEventListener('click',e=>{
+wokringwithEx.value = "yes";
+dnaloader.style.display = 'block';
+document.getElementById("unq").style.display='none';
+back.classList.add("blur"); 
+
+
+
+  $.ajax({
+        type: 'get',
+        url: "{% url 'proteome:load_example_lbl_free' %}",
+          success : function(data){
+          $('#ex-data-div').html(data.exData);
+          document.getElementById("upload-file-div").style.display='none';
+          fasta.style.display='none';
+          dnaloader.style.display = 'none';
+          document.getElementById("unq").style.display='block';
+          back.classList.remove("blur"); 
+          hidDiv.classList.remove('hidden');
+
+        },
+        error: function(error){
+            console.log(error)
+            dnaloader.style.display = 'none';
+            document.getElementById("unq").style.display='block';
+            back.classList.remove("blur"); 
+            alert("Oops Something went wrong");
+        }
+        });
+        
+});
+
+
+$(document).ready(function(){
+      $('#signup').validate({
+        rules:{
+          missed_clevage:{
+            required:true,
+            minlength:1
+           }
+        }
+    })
+  });
+
+</script>
+
+{% endblock %}
+
+

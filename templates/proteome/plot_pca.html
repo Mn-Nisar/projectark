@@ -1,0 +1,149 @@
+{% extends 'proteome/base.html' %}
+{% block content %}   
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col col-xl-12 col-lg-12">
+            <div class="d-flex justify-content-center">
+
+             <!-- <form id= "form" >
+                    {% csrf_token %}
+
+                    <p> Select Features:</p>
+
+                    {% for column in columns %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="{{ column }}" id = "{{ column }}" name = "features" >
+                      <label class="form-check-label" for="{{ column }}">
+                        {{ column }}
+                      </label>
+                    </div>
+                  {% endfor %}
+
+                  <label for="target"> Select Target:</label>
+                  <select class="form-select" aria-label="Default select example" id = "target">
+                    {% for column in columns %}
+                    <option value="{{ columns }}">{{ column }}</option>
+                    {% endfor %}
+                  </select>
+        
+
+                  <input type="submit" name="submit" class="btn btn-lg btn-primary">
+              </form> -->
+
+              <div class="wrap shadow">
+
+                <div class="sidebar">
+            
+                   <ul>
+                    <li>
+                        <a href="#">
+                            <div class="row d-flex justify-content-center">
+                                <label for="pval-cutoff"> P-value cut off</label>
+                                 <input type="text" id = "pval-cutoff" name="pval-cutoff" value="0.05" class="mt-2" style="width: 14vh;">
+                           </div>
+                        </a>
+                    </li>
+                  <li>
+                        <a href="#">
+                            <div class="row d-flex justify-content-center">
+                                <label for="index">Select index: </label>
+                            <div class="select">
+                                <select aria-label="Default select example" id = "index">
+                                    {% for column in columns %}
+                                   <option value="{{ columns }}">{{ column }}</option>
+                                    {% endfor %}
+                                </select>
+                              </div></div>
+                        </a>
+                    </li>
+                 
+                   
+                    <li>
+                        <a href="#">
+                            <div class="row d-flex justify-content-start">
+                              <div class="col d-flex justify-content-start">
+                                <input class="form-check-input" type="radio" name="lable-protiens" value="all" checked>
+                                <label for="heirachial"> <label for="">label all datapoints</label>
+                              </div>
+                           </div>
+                        </a>
+                    </li>
+                    <li>
+                      <!-- <a href="#"> -->
+                        <div class="row d-flex justify-content-center">
+                          <div class="mt-3 col d-flex justify-content-center">
+                            <input type="submit" name="submit" class="mb-5 btn btn-lg btn__primary">
+                              </div>
+                       </div>
+                    <!-- </a> -->
+                      
+                    </li>
+                    <li>
+
+                    </li>
+                   
+                </ul>
+            </div>
+                    <!--menu item-->
+                </div>
+
+            </div>
+        </div>
+    
+        <div class="mt-3 row">
+          <div class="col col-xl-2 col-lg-2"></div>
+              <div class="col col-xl-10 col-lg-10 d-flex justify-content-center hidden"  id="pcahead"><h5 class="mt-2"><u>PCA Plot</u></h5></div>
+              
+                <div class="col col-xl-2 col-lg-2"></div>
+              <div class="col col-xl-10 col-lg-10 d-flex justify-content-center">
+                <div class="controlplot d-flex">
+                  <div class="wrapperplot" style="border: 3px solid grey;" id="wrap">
+                      <div class="allow-scrollplot d-flex justify-content-center">
+                <div id="pca-plot-div" class="mt-5 d-flex justify-content-center"></div>
+            </div>
+        </div>
+        <div class="ms-3 download-plot-div" id="downplot" style="top: 87vh; left: 186vh;">  
+          <a class="download" href="" id ="download-href" download= "pca plot.svg">
+          <button type="button" class="btn btn-sm btn-outline-primary"> <small>.SVG</small>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+              <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+              <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+              </svg>
+          </button>
+          </a>
+      </div></div></div>
+    </div>
+</div>
+
+
+<script>
+
+const downloadHref = document.getElementById('download-href');
+
+
+function get_plot(){
+
+    $.ajax({
+            type: 'get',
+            url: "{% url 'proteome:plot_pca_plot' %}",
+            success : function(data){
+            $('#pca-plot-div').html(`<img src="data:image/svg+xml;base64,${data.pca}">`);
+            downloadHref.setAttribute("href",`data:image/svg+xml;base64,${data.pca}`);
+
+            
+                },
+    
+            error: function(error){
+                console.log(error)
+            },
+   
+            });
+
+}
+
+window.onload=get_plot();
+    
+</script>
+
+{%  endblock %}

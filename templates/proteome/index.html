@@ -1,0 +1,787 @@
+{% extends 'proteome/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+/* .lab img.Sorv.image-hover {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    object-fit: contain;
+    opacity: 0;
+    transition: opacity .1s;
+  }
+
+  .lab:hover img.Sorv.image-hover {
+    opacity: 1;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .main-banner{
+max-width: 90%;
+max-height: 90%;
+
+} */
+.html{
+  scroll-behavior: smooth;
+}
+.btn-primary {
+    color: #fff;
+    background-color: rgb(70, 150, 67);
+    border-color: rgb(70, 150, 67);
+  }
+  .btn-primary:hover {
+    color: #fff;
+    background-color: rgb(53, 133, 50);
+    border-color: rgb(46, 119, 43);
+  }
+  .btn-check:focus + .btn-primary, .btn-primary:focus {
+    color: #fff;
+    background-color: rgb(53, 133, 50);
+    border-color: rgb(46, 119, 43);
+    box-shadow: 0 0 0 0.25rem rgb(46, 119, 43, 0.5);
+  }
+  .btn-check:checked + .btn-primary, .btn-check:active + .btn-primary, .btn-primary:active, .btn-primary.active, .show > .btn-primary.dropdown-toggle {
+    color: #fff;
+    background-color: rgb(53, 133, 50);
+    border-color: rgb(46, 119, 43);
+  }
+  .btn-check:checked + .btn-primary:focus, .btn-check:active + .btn-primary:focus, .btn-primary:active:focus, .btn-primary.active:focus, .show > .btn-primary.dropdown-toggle:focus {
+    box-shadow: 0 0 0 0.25rem rgba(246, 122, 88, 0.5);
+  }
+  .btn-primary:disabled, .btn-primary.disabled {
+    color: #fff;
+    background-color: rgb(70, 150, 67);
+    border-color: rgb(70, 150, 67);
+  }
+  .main-logo{
+    width: 50vh;
+    max-width: 100%;
+    /* margin-top: 4rem;
+    margin-left: -10rem; */
+  }
+
+  .main-options{
+    width: 50%;
+    max-width: 100%;
+  }
+
+        /* try */
+    
+    .nav-item-style{
+
+      font-size: large;
+      font-weight: 500;
+    }
+
+
+    .nav-item-style:hover {
+      color: rgb(70, 150, 67);
+      border-bottom: 3px solid rgb(70, 150, 67);
+    }
+.nav-item-style:active{
+  color: #C04848;
+}
+   
+  .heading {
+      text-decoration: none;
+      position: relative;
+  }
+  
+  .heading:after {
+      content: '';
+      width: 100%;
+      position: absolute;
+      left: 0;
+      bottom: 1px;
+      border-width: 0 0 1px;
+      border-style: solid;
+  }
+  #footer {
+    background: #f1e9cc;
+    padding: 0 0 30px 0;
+    color: #000;
+    font-size: 14px;
+    /* font-weight: bold; */
+    /* font-family: 'Snell Roundhand, cursive'; */
+    
+  }
+  
+  #footer .footer-top {
+    background: rgb(240, 232, 207);
+
+background: linear-gradient(90deg, rgb(238, 233, 216) 0%, hsla(176, 73%, 88%, 1) 100%);
+
+background: -moz-linear-gradient(90deg, hsla(46, 73%, 75%, 1) 0%, hsla(176, 73%, 88%, 1) 100%);
+
+background: -webkit-linear-gradient(90deg, rgb(240, 231, 202) 0%, hsla(176, 73%, 88%, 1) 100%);
+
+filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#CCF7F4", endColorstr="#EED991", GradientType=1 );
+    padding: 30px 0 10px 0;
+  }
+  
+  #footer .footer-top .footer-info {
+    margin-bottom: 20px;
+  }
+  
+  #footer .footer-top .footer-info h3 {
+    font-size: 34px;
+    margin: 0 0 20px 0;
+    padding: 2px 0 2px 0;
+    line-height: 1;
+    /* font-family: "Montserrat", sans-serif; */
+    color: #fff;
+    font-weight: 400;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+  
+  #footer .footer-top .footer-info p {
+    font-size: 13px;
+    line-height: 24px;
+    margin-bottom: 0;
+    /* font-family: "Montserrat", sans-serif; */
+    color: #000;
+  }
+  
+  #footer .footer-top .social-links a {
+    font-size: 18px;
+    display: inline-block;
+    background: #ffffff;
+    color: #fff;
+    line-height: 1;
+    padding: 8px 0;
+    margin-right: 4px;
+    border-radius: 50%;
+    text-align: center;
+    width: 36px;
+    height: 36px;
+    transition: 0.3s;
+    
+  }
+  
+  #footer .footer-top .social-links a:hover {
+    background: #fff;
+    color: #000
+  }
+  
+  #footer .footer-top h4 {
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    text-transform: uppercase;
+    position: relative;
+    padding-bottom: 5px;
+  }
+  
+  #footer .footer-top .footer-links {
+    margin-bottom: 30px;
+  }
+  
+  #footer .footer-top .footer-links ul {
+    /* list-style: none; */
+    padding: 0;
+    margin: 0;
+    
+  }
+  
+  #footer .footer-top .footer-links ul li {
+    padding: 8px 0;
+  }
+  
+  #footer .footer-top .footer-links ul li:first-child {
+    padding-top: 0;
+  }
+  
+  #footer .footer-top .footer-links ul a {
+    color: #ecf5ff;
+    
+  }
+  
+  #footer .footer-top .footer-links ul a:hover {
+    color: #124cc2;
+  }
+  
+  #footer .footer-top .footer-contact {
+    margin-bottom: 30px;
+  }
+  
+  #footer .footer-top .footer-contact p {
+    line-height: 26px;
+  }
+  
+  #footer .footer-top .footer-newsletter {
+    margin-bottom: 30px;
+  }
+  
+  #footer .footer-top .footer-newsletter input[type="email"] {
+    border: 0;
+    padding: 6px 8px;
+    width: 65%;
+  }
+  
+  #footer .footer-top .footer-newsletter input[type="submit"] {
+    background: #007bff;
+    border: 0;
+    width: 35%;
+    padding: 6px 0;
+    text-align: center;
+    color: #fff;
+    transition: 0.3s;
+    cursor: pointer;
+  }
+  
+  #footer .footer-top .footer-newsletter input[type="submit"]:hover {
+    background: #0062cc;
+  }
+  
+  #footer .copyright {
+    text-align: center;
+    padding-top: 30px;
+  }
+  
+  #footer .credits {
+    text-align: center;
+    font-size: 13px;
+    color: #000;
+  }
+  
+  #footer .credits a {
+    color: #000;
+  }
+  
+  #footer .credits a:hover {
+    color: #202b6e;
+  }
+  .abc a {
+    color: #000;
+    font-size:medium;
+    /* font-weight: bold; */
+  }
+  .abc a:hover{
+    color: #2d3985;
+  }
+  .footer-info a {
+    color: #000
+  }
+
+  .footer-info a:hover {
+    color: #2d3985;
+  }
+
+/* try */
+
+.ciods{
+  font-size: 30px;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  font-family: "Poppins", sans-serif;
+}
+
+
+
+ 
+
+/* logo */
+
+
+/* tryy */
+
+
+
+
+/* parag */
+
+*{
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.wrapper h1{
+  font-size: 2.5rem;
+  font-family: 'Montserrat';
+  font-weight: normal;
+  color: #444;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.wrapper{
+  position: relative;
+  width: 80vh;
+  margin: 0 auto;
+  max-width: 80vh;
+  justify-content: center;
+  
+}
+
+.cols{
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.lab{
+  text-decoration: none;
+  color: white;
+}
+
+.name{
+  height: 530px;
+    width: 100%;
+    text-align: center;
+    color: white;
+    overflow: hidden;
+    background: #C04848;  /* fallback for old browsers */
+    background:  url("{% static 'proteome/col.jpg' %}"); 
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+
+
+#footer .footer-top .footer-links ul a {
+    color: #ecf5ff;
+  }
+  
+  #footer .footer-top .footer-links ul a:hover {
+    color: #74b5fc;
+  }
+  
+button {
+  height: 44px;
+}
+
+.custom-btn {
+  width: 130px;
+  height: 40px;
+  color: #fff;
+  border-radius: 5px;
+  padding: 10px 25px;
+  font-family: 'Lato', sans-serif;
+  font-weight: 500;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+   box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
+   7px 7px 20px 0px rgba(0,0,0,.1),
+   4px 4px 5px 0px rgba(0,0,0,.1);
+  outline: none;
+}
+.btn-13 {
+  background-color: #89d8d3;
+background-image: linear-gradient(315deg, #89d8d3 0%, #03c8a8 74%);
+  border: none;
+  z-index: 1;
+}
+.btn-13:after {
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  border-radius: 5px;
+   background-color: #4dccc6;
+background-image: linear-gradient(315deg, #4dccc6 0%, #96e4df 74%);
+  box-shadow:
+   -7px -7px 20px 0px #fff9,
+   -4px -4px 5px 0px #fff9,
+   7px 7px 20px 0px #0002,
+   4px 4px 5px 0px #0001;
+  transition: all 0.3s ease;
+}
+.btn-13:hover {
+  color: #fff;
+}
+.btn-13:hover:after {
+  top: 0;
+  height: 100%;
+}
+.btn-13:active {
+  top: 2px;
+}
+
+  @import url("https://fonts.googleapis.com/css?family=Cardo:400i|Rubik:400,700&display=swap");
+:root {
+  --d: 700ms;
+  --e: cubic-bezier(0.19, 1, 0.22, 1);
+  --font-sans: "Rubik", sans-serif;
+  --font-serif: "Cardo", serif;
+}
+
+
+
+.page-content {
+  display: grid;
+  grid-gap: 1rem;
+  padding: 1rem;
+  max-width: 98%;
+  margin: 0 auto;
+  font-family: var(--font-sans);
+}
+@media (min-width: 600px) {
+  .page-content {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 800px) {
+  .page-content {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.card {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  padding: 1rem;
+  width: 100%;
+  text-align: center;
+  color: whitesmoke;
+  background-color: whitesmoke;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1), 0 2px 2px rgba(0, 0, 0, 0.1), 0 4px 4px rgba(0, 0, 0, 0.1), 0 8px 8px rgba(0, 0, 0, 0.1), 0 16px 16px rgba(0, 0, 0, 0.1);
+}
+@media (min-width: 600px) {
+  .card {
+    height: 350px;
+    width: 300px;
+  }
+}
+.card:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 110%;
+  background-size: cover;
+  background-position: 0 0;
+  transition: transform calc(var(--d) * 1.5) var(--e);
+  pointer-events: none;
+}
+.card:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 200%;
+  pointer-events: none;
+  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.009) 11.7%, rgba(0, 0, 0, 0.034) 22.1%, rgba(0, 0, 0, 0.072) 31.2%, rgba(0, 0, 0, 0.123) 39.4%, rgba(0, 0, 0, 0.182) 46.6%, rgba(0, 0, 0, 0.249) 53.1%, rgba(0, 0, 0, 0.32) 58.9%, rgba(0, 0, 0, 0.394) 64.3%, rgba(0, 0, 0, 0.468) 69.3%, rgba(0, 0, 0, 0.54) 74.1%, rgba(0, 0, 0, 0.607) 78.8%, rgba(0, 0, 0, 0.668) 83.6%, rgba(0, 0, 0, 0.721) 88.7%, rgba(0, 0, 0, 0.762) 94.1%, rgba(0, 0, 0, 0.79) 100%);
+  transform: translateY(-50%);
+  transition: transform calc(var(--d) * 2) var(--e);
+}
+.card:nth-child(1):before {
+  background-image: url("{% static 'proteome/logo/Labelled_F.png' %}");
+}
+.card:nth-child(2):before {
+  background-image: url("{% static 'proteome/logo/Labell-free_F.png' %}");
+}
+.card:nth-child(3):before {
+  background-image: url("{% static 'proteome/logo/MA_Differential.png' %}");
+}
+.card:nth-child(4):before {
+  background-image: url("{% static 'proteome/logo/Data-Visualization_F.png' %}");
+}
+
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 1rem;
+  transition: transform var(--d) var(--e);
+  z-index: 1;
+}
+.content > * + * {
+  margin-top: 1rem;
+}
+
+.title {
+  font-size: 1rem;
+  /* font-weight: bold; */
+  line-height: 1.2;
+  color: rgb(17, 17, 17);
+  position: relative;
+}
+
+.copy {
+  /* font-family: var(--font-serif); */
+  font-size: 1.1rem;
+  /* font-style: italic; */
+  text-decoration: none !important;
+  line-height: 1.35;
+  color: white;
+}
+
+.btnt {
+  cursor: pointer;
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.65rem;
+  font-weight: bold;
+  letter-spacing: 0.025rem;
+  text-transform: uppercase;
+  color: white;
+  background-color: black;
+  border: none;
+}
+.btnt:hover {
+  background-color: #f1eeee;
+}
+.btnt:focus {
+  outline: 1px dashed yellow;
+  outline-offset: 3px;
+}
+
+@media (hover: hover) and (min-width: 600px) {
+  .card:after {
+    transform: translateY(0);
+  }
+
+  .content {
+    transform: translateY(calc(100% - 4.5rem));
+  }
+  .content > *:not(.title) {
+    opacity: 0;
+    transform: translateY(1rem);
+    transition: transform var(--d) var(--e), opacity var(--d) var(--e);
+  }
+
+  .card:hover,
+.card:focus-within {
+    align-items: center;
+  }
+  .card:hover:before,
+.card:focus-within:before {
+    transform: translateY(-4%);
+  }
+  .card:hover:after,
+.card:focus-within:after {
+    transform: translateY(-50%);
+  }
+  .card:hover .content,
+.card:focus-within .content {
+    transform: translateY(0);
+  }
+  .card:hover .content > *:not(.title),
+.card:focus-within .content > *:not(.title) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: calc(var(--d) / 8);
+  }
+
+  .card:focus-within:before, .card:focus-within:after,
+.card:focus-within .content,
+.card:focus-within .content > *:not(.title) {
+    transition-duration: 0s;
+  }
+}
+
+
+
+</style>
+
+  
+  <div class="name">
+    <div class="row d-flex justify-content-center">
+        <div class="col col-xl-12 col-lg-12">
+            <div class="d-flex justify-content-center">
+                <div class="logo-wrap d-flex justify-content-center animate__animated animate__zoomIn">
+                     <img  class ="mt-5 main-logo" src="{% static 'proteome/logo/Logo_PR_plain.png' %}" style="width: 90%;" alt="">
+                    
+                </div>
+            </div>
+
+            </div>
+            <div class="col col-xl-12 col-lg-12 justify-content-center">
+             <h4 style="color: black;position: relative;" class="mt-3 animate__animated animate__fadeInRight">One stop solution for data analysis and data visualization</h4>
+              </div>
+             
+        </div>
+     
+   
+  
+  </div>
+  
+  <div class="iba">
+  
+
+
+  <div class="cols">
+  <div class="p-2 wrapper justify-content-center" id="sect2">
+    <h1><u>Analysis Method</u></h1>
+    <main class="page-content justify-content-center">
+      <div class="card">
+        <a class="lab" href="{% url 'proteome:input' %}">
+          <h6 class="title mt-1">Labeled Samples</h6>
+
+          <div class="content">
+          <p class="copy">Data Normalization, Batch Correction, Differential Expression Analysis, P-value & Fold-change, Volcano map, Heatmap, Gene Ontology, Protien Protien Interaction</p>
+          <button class="btnt" style="display: none;">View More</button>
+        </div>
+      </a>
+      </div>
+      <div class="card"  id ="lable-free-bottun" style="cursor: pointer;">
+        <h2 class="title mt-1">Label free Samples</h2>
+
+        <div class="content">
+          <p class="copy">Protein Quantification (iBAQ, NSAF, TOP3), Data Normalization, Batch Correction, Differential Expression Analysis, P-value & Fold-change, Volcano map, Heatmap, Gene Ontology, Protien Protien Interaction</p>
+          <!-- <button class="btnt">View More</button> -->
+        </div>
+      <!-- </a> -->
+      </div>
+      <div class="card">
+        <a class="lab" href="#">
+          <h2 class="mt-1 title">Differential Expression Analysis</h2>
+
+        <div class="content">
+          <p class="copy">Differential Expression Analysis, P-value & Fold-change, Volcano map, Heatmap, Gene Ontology, Protien Protien Interaction</p>
+          <!-- <button class="btnt">View More</button> -->
+        </div>
+      </a>
+      </div>
+      <div class="card">
+        <a class="lab" href="#">
+          <h2 class="mt-1 title">Data Visualization</h2>
+
+        <div class="content">
+          <p class="copy">Volcano map ,Heatmap, Circular Bar plot, PCA plot, Rain clound plot, MA plot, Upset plot, Density plot, Violin plot, Box plot, Bubble plot, Histogram S curve</p>
+          <!-- <button class="btnt">View More</button> -->
+        </div>
+      </a>
+      </div>
+    </main>
+  
+   </div>
+  </div></div>
+  
+  
+  <div class="mt-5 ibaq-select" id = "ibaq-select" style="display: none;opacity: 1;">
+    <div class="my-5 container d-flex justify-content-center">
+        <div class="my-5">
+  
+            <div class="col col-xl-11 col-lg-11 shadow" style="background-color: white;border:1px inset #6d5dfc; border-radius: 10px;">
+            <div class="ps-5 pb-5 pe-3">     
+
+                <div class="col col-xl-12 col-lg-12 d-flex justify-content-end">
+                <button type="button" id = "close-ibq-btn" class="btn btn-sm btsn" style="height: 38px;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                    <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                  </svg>
+                </button>
+                </div>
+                <div class="d-flex justify-content-center m-5 p-1 pe-5" style="background-color:white;">
+                        <p> Require Protien Quntification? (iBAQ , dNSAF or TOP3)</p>
+                      </div>
+                        <div class="row mb-5">
+                          <div class="col col-xl-6 col-lg-6 d-flex justify-content-end">
+                            <a href="#"><button type="button" class ="mt-2 btn btn-success btn-lg"> yes </button></a></div>
+                            <div class="col col-xl-6 col-lg-6 d-flex justify-content-start">
+                            <a href="{% url 'proteome:input' %}"><button type="button" class="mt-2 mb-2 btn btn-lg btn-success"> No </button> </a>
+                          </div>
+                        </div>
+                 </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  
+  
+  
+  
+  <div  class="spacer"> . </div>
+    <footer id="footer">
+    <div class="footer-top">
+        <div class="row d-flex justify-content-center">
+          <div class="col-lg-2 col-md-2 footer-info">
+            <a href="https://yenepoya.edu.in/" target="_blank">
+            <img src="{% static 'proteome/logo/yuo.png' %}" class="mx-5 my-4" style="width:30%;height: 60%; max-width: 100%; max-height: 100%;    object-fit: cover;"> </a>
+        </div>
+     
+          <div class="col-lg-6 col-md-6 footer-info">
+            <h1 class="mt-3 ciods d-flex justify-content-start" style="font-family:Arial Black;">PROTEOARK</h1>
+            <p style="text-align: justify;font-size:medium;"><br> ProteoArk is developed in <a style="text-decoration: none;" href="https://ciods.in/"> Centre for Integrative Omics Data Science (CIODS) </a> and  supported by <a style="text-decoration: none;" href="https://yenepoya.edu.in/">Yenepoya (Deemed to be University)</a></p>
+     
+       
+          </div>
+  
+    
+  
+          <div class="d-flex justify-content-center col-lg-4 col-md-4">
+            <div class="abc">
+            <h4 style="font-size:medium;color: rgb(0, 0, 0);">Useful Links</h4>
+            <ul>
+              <li><a href="#" style="text-decoration: none;">Home</a></li>
+              <li><a href="#" style="text-decoration: none;">Labelled Samples</a></li>
+              <li><a href="#" style="text-decoration: none;">Label free Samples</a></li>
+              <li><a href="#" style="text-decoration: none;">Differential Expression Analysis</a></li>
+              <li><a href="#" style="text-decoration: none;">Data Visualization</a></li>
+              <li><a href="#" style="text-decoration: none;">Contact Us</a></li>
+            </ul>
+          </div>
+          </div>
+  
+  
+        </div>
+    </div>
+    <div class="container">
+      <div class="copyright">
+        &copy; Copyright <strong>CIODS</strong>. All Rights Reserved by 
+      </div>
+      <div class="credits">
+  
+      <a style="text-decoration: none;" href="https://yenepoya.edu.in/">Yenepoya (Deemed to be University)</a>
+        <div class="d-flex justify-content-end" style="margin-top: -2rem;">
+        <a href="">
+          <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+        </a>
+        <a class="ms-3" href=""><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-google" viewBox="0 0 16 16">
+          <path d="M15.545 6.558a9.42 9.42 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.689 7.689 0 0 1 5.352 2.082l-2.284 2.284A4.347 4.347 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.792 4.792 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.702 3.702 0 0 0 1.599-2.431H8v-3.08h7.545z"/>
+        </svg></a>
+        <a class="ms-3" href="">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-linkedin" viewBox="0 0 16 16">
+            <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016a5.54 5.54 0 0 1 .016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z"/>
+          </svg>
+        </a>
+        <a class="ms-3" href="">
+          <i style='font-size:24px' class='fab'>&#xf395;</i>
+        </a>
+      </div>
+      </div>
+      
+    </div>
+  </footer>
+        
+<script src="http://threejs.org/examples/js/libs/stats.min.js"></script>   
+<script src="{% static 'proteome/scripts.js' %}"></script>
+
+<script>
+
+</script>
+
+
+{% endblock %}
+

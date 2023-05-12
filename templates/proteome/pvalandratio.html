@@ -1,0 +1,1545 @@
+{% extends 'proteome/base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<style type="text/css">
+
+
+div::-webkit-scrollbar{
+  width: 0.6rem;
+  height: 0.6rem;
+}
+
+div::-webkit-scrollbar-track{
+  background:#D3D3D3;
+}
+
+div::-webkit-scrollbar-thumb{
+  background:#B0E0E6;
+}
+
+.gene-ontology-scroll{
+  overflow: hidden;
+  /* margin-left: 5%; */
+  height:90vh;
+  width:80%;
+}
+
+.string-scroll{
+  overflow: hidden;
+  /* margin-left: 5%; */
+  height:99vh;
+  width:90%;
+}
+.string-scrolls{
+  overflow: hidden;
+  /* margin-left: 5%; */
+  height:85vh;
+  width:90%;
+}
+
+.wrapper{
+  width: 100%;
+  height:80vh;
+}
+.wrapperg{
+    width: 100%;
+    height: 20vh;
+}
+
+.wrapper1{
+    width: 100%;
+    height:95vh;
+}
+
+.allow-scroll{
+    position: relative;
+    height:90vh;
+    width:100%;
+    overflow-y: scroll;
+    overflow-x: scroll;
+}
+.allow-scrollg{
+    position: relative;
+    height: 80vh;
+    width: 100%;
+    overflow-y: scroll;
+    overflow-x: scroll;
+}
+.allow-scrolls{
+    position: relative;
+    height: 40vh;
+    width: 90%;
+}
+.allow-scroll4{
+    position: relative;
+    height: 90%;
+    width: 90%;
+    overflow-y: scroll;
+    /* overflow-x: scroll; */
+
+}
+
+.heading {
+    text-decoration: none;
+    position: relative;
+}
+.heading:after {
+    content: '';
+    width: 100%;
+    position: absolute;
+    left: 0;
+    bottom: 1px;
+    border-width: 0 0 1px;
+    border-style: solid;
+}
+
+
+
+#side-menu{
+top: 20vh;
+position: fixed;
+width: 8.5vh;
+height: 40vh;
+/* background-color:rgba(165, 154, 154, 0.5); */
+z-index:9999;
+border-radius: 0 4px 4px 0;
+}
+
+.each-buttons{
+text-decoration: none;
+}
+
+
+.each-buttons button{
+margin: 1vh;
+width: 6vh;
+height: 6vh;
+}
+
+.side-menu-button{
+color: black;
+background-color: (0,0,0.8);
+border-radius: 10px;
+}
+
+
+.side-menu-button:hover{
+color: rgb(0, 0, 0);
+background-color: rgb(219, 222, 224);
+width: 6.7vh;
+height: 6vh;
+}
+
+/* stylebtnn */
+.cta {
+    color: black;
+    background-color: (0,0,0.8);
+    border-radius: 10px;
+    transition: width 0.01s;
+}
+.cta:hover {
+  width: 250px;
+  transition: width 0.3s;
+}
+
+/* .cta i {
+  opacity: 1;
+  transition: opacity 0.5s
+}
+
+.cta:hover i {
+  opacity: 0;
+  transition: opacity 0.5s
+} */
+
+.cta .button-text {
+  opacity: 0;
+  transition: opacity .5s;
+  position: relative;
+  width: 100%;
+  left: 0;
+ }
+
+.cta:hover .button-text {
+  opacity: 1;
+  transition: opacity 0.5s
+}
+/* endstyle */
+
+
+.volcano-genes{
+display: flex;
+width: 100%;
+max-width: 100%; 
+flex-wrap: wrap;
+}
+
+.each-genes{
+    padding: 2px;
+
+    /* background-color: rgb(189, 189, 189); */
+    font-size: x-small;
+}
+input[type=text] {
+  width: 100%;
+  padding: 6px 6px;
+  margin: 6px 0;
+  box-sizing: border-box;
+  border: solid #639aa1;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  outline: none;
+}
+
+input[type=text]:focus {
+  border: 3px solid #87CEFA;
+
+}
+
+#reset-div{
+    transition: 0.5s;
+}
+
+/* autocomplete */
+.autocomplete {
+  position: relative;
+  display: inline-block;
+}
+
+input {
+  border: 1px solid transparent;
+  background-color: #f1f1f1;
+  padding: 10px;
+  font-size: 16px;
+}
+
+input[type=text] {
+  background-color: #f1f1f1;
+  width: 100%;
+}
+
+
+
+.autocomplete-items {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  /*position the autocomplete items to be the same width as the container:*/
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+
+.autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff; 
+  border-bottom: 1px solid #d4d4d4; 
+}
+
+/*when hovering an item:*/
+.autocomplete-items div:hover {
+  background-color: #e9e9e9; 
+}
+
+/*when navigating through the items using the arrow keys:*/
+.autocomplete-active {
+  background-color: DodgerBlue !important; 
+  color: #ffffff; 
+}
+
+
+/* scroll */
+.scrollbar
+{
+	margin-left: 30px;
+	float: left;
+	height: 70%;
+    width: 80%;
+	background: #F5F5F5;
+	overflow-y: scroll;
+	/* margin-bottom: 25px; */
+}
+
+.force-overflow
+{
+	min-height: 450px;
+}
+
+#style-15::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
+	background-color: #F5F5F5;
+	border-radius: 6px;
+}
+
+#style-15::-webkit-scrollbar
+{
+	width: 7px;
+	background-color: #F5F5F5;
+}
+
+#style-15::-webkit-scrollbar-thumb
+{
+	border-radius: 8px;
+	background-color: #FFF;
+	background-image: -webkit-gradient(linear,
+									   40% 0%,
+									   75% 84%,
+									   from(#347c92),
+									   to(#3d8496),
+									   color-stop(.6,#51b0d6))
+}
+
+
+
+.loading {
+  position: fixed;
+  float: left;
+  top: 40vh;
+  left: 80vh;
+  height: 120px;
+  padding: 0px;
+  width: 160px;
+  border-left: 1px solid #fff;
+  border-bottom: 1px solid #fff;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+
+.hidden{
+display: none;
+}
+
+</style>
+   
+
+<div id="side-menu">
+<a href="#result" class="each-buttons"> <button type="button" title="Result" class="side-menu-button justify-content-center" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Result"><img src="{% static 'proteome/researchh.png' %}" style='height:25px; width: 25px;'></button> </a>
+<a href="#volcano" class="each-buttons"> <button type="button" class="side-menu-button justify-content-center" title="volcano map" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Result"><img src="{% static 'proteome/chart.png' %}" style='height:25px; width: 25px;'></button> </a>
+<a href="#heatmap-section" class="each-buttons">  <button type="button" class="side-menu-button justify-content-center" title="HeatMap" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Result"><img src="{% static 'proteome/heatmap_icon.png' %}" style='height:30px; width: 30px;'></button></a>
+<a href="#go-section" class="each-buttons"> <button type="button" class="side-menu-button" data-toggle="tooltip" data-placement="right" title="Gene Ontology"><b style="font-family: garamond;">G.O</b></button> </a>
+<a href="#string-section" class="each-buttons"> <button type="button" class="side-menu-button justify-content-center" data-toggle="tooltip" data-placement="right" title="String"><img src="{% static 'proteome/string.png' %}" style='height:30px; width: 30px;'></button> </a>
+<a href="{% url 'proteome:download_file' %}" class="each-buttons"> <button type="button" class="p-2 cta justify-content-center"> 
+    <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16" style="fill: rgb(26, 142, 26);">
+    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+    <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+    </svg><span class="ms-2 button-text">Download as complete file</span></button> </a>
+</div>
+
+<div id="test">
+<section id = "result">
+<div class="container">
+  
+    <div class="mt-3 row">
+        <div class="mt-2 col">
+            <div class="d-flex justify-content-center">
+            <h2 class="h2 heading"><b> Results</b></h2>
+            
+            </div>
+        </div>
+     </div>  
+
+<hr align="center" width="100%">
+
+</div>
+<div class="container">
+
+<div class="row">
+        <div class="col col-xl-8 col-lg-8">
+                <div class="p-3 d-flex justify-content-center">
+               <div style="max-width: 100%; max-height: 100%;">
+
+                <img src="data:image/svg+xml;base64, {{ bar_plot|safe }}">
+
+            
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col col-xl-4">
+            <div class="d-flex justify-content-center">
+            <h6> Total Number of Protiens </h6></div>
+            <div class="d-flex justify-content-center">
+                <h1 class="h1" style="font-size: 7.5em; font-weight: bold;">{{ total_protiens }} </h1>
+            </div>
+
+            <div class="d-flex justify-content-center mt-3 mb-5">
+                <a class="download" href="{% url 'proteome:download_file' %}" >
+                  <button type="button" class="btn btn-sm btn-outline-primary"> <small>Download complete result(.csv)</small>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                        <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                        </svg>
+                    </button>
+
+                </a>
+            </div>
+            
+
+           <h6>Total Differentially-regulated Proteins across all samples</h6>
+            <div class="d-flex justify-content-center">
+                <div id="inc" style="font-size: 8em; font-weight: bold;"><h1 class="h1" > <b>{{ total_up }} </b></h1></div>
+            </div>
+
+
+               <div class="d-flex justify-content-center mt-2">
+                <a class="download" href="{% url 'proteome:download_ddf' %}" >
+                  <button type="button" class="btn btn-sm btn-outline-success"> <small>Download Up/Down regulated Data</small>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                        <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                        </svg>
+                    </button>
+                
+                </a>
+             </div>
+
+        </div>
+
+    </div>
+
+    <hr align="center" width="100%" style="margin-top: 3rem; margin-bottom: 3rem;">
+
+<div class="row mt-3">
+    <div class="col col-xl-12 col-lg-12">
+        <div class="d-flex justify-content-end">
+            <div class="mr-5">
+                <input type="button" id="reset-cut-off" role = "button" value="Reset cut-off" class="btn btn-lg btn-primary">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+
+    <hr align="center" width="100%" style="margin-top: 3rem; margin-bottom: 3rem;">
+    <!-- </div> -->
+</section>
+
+<section id="volcano">
+<div class="container">
+    <div class="row">
+            <div class="d-flex justify-content-center"> <h2 class="h2 heading"><b> Volcano map</b></h2></div>
+    {% for name, volcanoplot in volcanoplotlist.items %}
+
+          <div class="col col-xl-6">
+          <div class="d-flex justify-content-center">
+            <img src="data:image/svg+xml;base64, {{ volcanoplot.0|safe }}">
+        </div>
+
+            <div class="d-flex justify-content-end mr-4">
+               <a class="download" href="data:image/svg+xml;base64, {{ volcanoplot.0|safe }}" download = "{{ name }}.svg" >
+              <button type="button" class="btn btn-sm btn-outline-primary"> <small>.SVG</small>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-download" viewBox="0 0 16 16">
+                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                    <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                    </svg>
+                </button>
+                </a>
+
+                </div>
+
+                <div class="mt-4 volcano-genes-container">
+                    <div class="row d-flex justify-content-center">
+                        
+                        <div class="col col-xl-6 col-lg-6 d-flex justify-content-center">
+                            <div class="wrapperg">
+                                <p class="ms-4">Upregulated</p>
+                                <div class="scrollbar" id="style-15">
+                                    <div class="force-overflow">
+
+                             <div class="p-1 volcano-genes">
+                                {% for genes in volcanoplot.1.Upregulated %}
+                            <p class = "m-1 each-genes">{{ genes }}</p> 
+                                {% endfor %}
+                        </div></div></div>
+                          </div>
+               
+                        </div>
+                        
+                        <div class="col col-xl-6 col-lg-6 d-flex justify-content-center">
+                            <div class="wrapperg">
+                                <p class="ms-4">Downregulated</p>
+                                <div class="scrollbar" id="style-15">
+                                    <div class="force-overflow">
+                                <div class="p-1 volcano-genes">
+                                           
+                                    {% for genes in volcanoplot.1.Downregulated %}
+                                    <p class = "m-1 each-genes">{{ genes }}</p> 
+                                        {% endfor %}
+
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+
+                        </div>
+                    
+                
+                </div></div>
+
+                
+                </div>
+            {% endfor %}
+    
+        </div>
+    </div>
+
+</section>
+
+<section id = "heatmap-section">
+    
+    <div class="container mt-2">
+        <hr align ="center" width="100%" style="margin-top: 3rem; margin-bottom: 3rem;">
+
+        <div class="row ">
+            <div class="col col-xl-12 d-flex justify-content-end">
+
+          <form id = "heatmap-from">
+            {% csrf_token %}
+                
+                <!-- <div class="mr-3 form-inline"> -->
+                    <div class="row mt-4">
+                        <div class="col col-xl-10 col-lg-7 d-flex justify-content-end">
+                    <input type="hidden"  id="accessionKeyzForHeatmap" name="accessionKey" value="{{ accessionKey }}">
+                   <select id = "heatmapType" class="form-select" name="heatmapType" style="width: 18ch;height: fit-content; max-width: 100%;">
+                    <option value="cluster-map">Cluster Map</option>
+                    <option value="k-Means">K-Means</option>
+                    <input class = "btn btn__primary btn-lg" type="submit" name="Submit" id = "heatmap-submit" style="margin-left: 2rem;">
+                    
+                   </select>
+                </div>
+                </div>
+                </form>
+
+               </div>
+        </div>
+          
+    <div class="row hidden" id ="herachial-heading">
+        <div class="col">
+            <div class="d-flex justify-content-center">
+            <h2 class="h2 heading"><b>Hierarchical cluster heatmap</b></h2>
+            
+            </div>
+        </div>
+     </div>  
+    
+     <div class="row d-flex justify-content-center">
+            <div class=" col col-xl-12 col-lg-12">
+                <div class="d-flex justify-content-center">
+                    <div id="heirarchial-plot-div" class="hidden"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container" id ="kmeansDiv" class = "hidden">
+
+        <div class="row hidden" id ="kmean-heading">
+            <div class="col">
+                <div class="d-flex justify-content-center">
+                <h2 class="h2 heading">K-Means clustering heatmap</h2>
+                
+                </div>
+            </div>
+         </div>  
+
+
+        <div class="row d-flex justify-content-center">
+
+            <div class=" col col-xl-6 col-lg-6">
+                <div class="m-5 d-flex justify-content-center">
+                <div id="elbowPlotDiv">
+                    <!-- this is wehere elbow plot will appear -->
+                </div>
+                </div>
+            </div>
+
+            <div class="mt-5 col col-xl-6 col-lg-6">
+
+                    <form id="elbow-from" class = "mt-5 hidden">
+                    <p class="mt-5"> By using Elbow method this plot has been created . please look for the first sudden change
+                     and mention the number of clusters</p>
+
+                    <label class="m-3"> Number of clusters:</label>
+                    <input type="number" name="no-of-cluster" id="noOfCluster" style="width: 10ch; max-width: 100%;">
+                    <input type="submit" name="submit" class="btn btn-lg btn__primary btn-primary">
+                    </form>
+
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col col-xl-12 col-lg-12">
+                <div class="m-3 d-flex justify-content-center">
+
+                    <div id ="kmean-plot-div">
+                        <!-- this is where kmean plot will appear -->
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+   
+       <div class="row d-flex justify-content-end">
+        <div class="col col-xl-12 col-lg-12">
+        <div class="mt-4 mr-3" id = "download-cluster-button" style="display: none;">
+                <a class="download" href="{% url 'proteome:download_cluster_df' %}" >
+                  <button type="button" class="btn btn-sm btn-outline-primary"> <small>Download data(.csv)</small>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                        <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                        </svg>
+                    </button>
+                    </a>
+
+            </div>
+        </div>
+        </div>
+    </div>
+
+</section>
+
+<section id = "go-section">
+    <div class="container">
+        <hr align="center" width="100%" class="mb-5 mt-5">
+     <div class="row">
+        <div class="col">
+            <div class="d-flex justify-content-center">
+                <h2 class="h2 heading"><b>Gene Ontology</b></h2>
+                
+            </div></div>
+        </div>
+    </div>
+    <form id ="gene-ont-ajax">
+    {% csrf_token %}
+    <div class="row d-flex justify-content-center mt-4">
+                <div class="col col-xl-8 col-lg-8 d-flex justify-content-end">
+                   
+                    <label class="mx-3 mt-3">Species:</label>
+                    <select class="form-select" name="species" id="species-for-go">
+                    <option value="Homo sapiens">Homo sapiens</option>
+                    <option value="Mus musculus">Mus musculus</option>
+                    <option value="Plasmodium falciparum 3D7">Plasmodium falciparum 3D7</option>
+                    <option value="Rattus norvegicus">Rattus norvegicus</option>
+                    <option value="Plasmodium vivax">Plasmodium vivax</option>
+                    <option value="Candida albicans">Candida albicans</option>
+                    <option value="other">other</option>
+
+                </select>
+                    <label for = "p-v-cut-off" class="mx-4 mt-3">P value cut-off</label>
+                    <input type="text" id ="p-v-cut-off" name="p-v-cut-off" value="0.05" class="form-control" style="width: 10ch; max-width: 100;">
+                    <input type = "submit" class="ms-5 btn btn-lg btn__primary" id="gene-submit" value="submit">
+                    
+                </div>
+               
+                
+        </div>
+        
+        <!-- <div class="mt-5 row"> -->
+            <div class="hidden" id="tohide">
+            <div class="hidden mt-3 ms-5 col col-xl-8 col-lg-8 d-flex justify-content-center" id="tohide">
+                
+            <label for = "" class="mt-4 ms-5">Enter the species name</label>
+            <form autocomplete="off" action="/action_page.php">
+                <div class="autocomplete" style="width:300px;">
+                  <input id="myInput" type="text" class="ms-3 mt-2" name="spec" placeholder="species">
+                </div>
+               
+              </form> 
+              <!-- <div><input type="submit" class="ms-5 btn btn-lg btn__primary"></div> -->
+    </div>
+</div>
+        <!-- </div> -->
+    </form>
+
+            <!-- gene ontology output -->
+            
+            <div class="mt-3 row d-flex justify-content-center">
+                <div class="mt-2 col col-xl-12 col-lg-12 d-flex justify-content-center">
+
+                <div class="gene-ontology-scroll hidden" id="genebodr" style="border: 1px solid #6d5dfc;">
+                    <div class="wrapper">
+
+                            <div class="m-3 d-flex justify-content-end">
+                            <div class="form-inline">
+
+                        <button type="button" id="go-plot-dl-btn" class="btn btn-outline-primary hidden mx-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                    <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                    </svg>
+                    .SVG</button>
+
+                            <a style="text-decoration: none;" href="{% url 'proteome:download_geneontology' %}">
+                            <button type="button" class="btn btn-outline-success hidden" id="go-download-button">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-file-earmark-arrow-down" viewBox="0 0 16 16">
+                                <path d="M8.5 6.5a.5.5 0 0 0-1 0v3.793L6.354 9.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 10.293V6.5z"/>
+                                <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+                                </svg>
+                            Gene Ontology Result(.csv)
+                            </button>
+                            </a>
+
+                            </div>
+                        </div>
+
+
+                        <div class="allow-scrollg" id = "gene-ontology-plot">
+                        <!-- gene ontology plot -->
+                        </div>
+
+                    </div>
+                </div>
+
+                    </div>
+                </div>
+            <!-- ajaaaaxxxxxxxxxx gene ontology-->
+    <!-- </div> -->
+</section>
+
+<!-- ============================================================================== -->
+<!-- section of kegg -->
+<!-- =================================================================================== -->
+
+
+<section id = "kegg-section" class="hidden">
+
+    <div class="container">
+        <hr align="center" width="100%" class="mb-5 mt-5">
+        
+        <div class="row">
+        <div class="col-xl-12 col-lg-12">
+            <div class="d-flex justify-content-center">
+                <h2 class="h2 heading">KEGG Pathways</h2>
+            </div>
+        </div>    
+        </div>
+
+        <form id="pathway-form">
+            {% csrf_token %}
+            <div class="mt-3 row d-flex justify-content">
+            <div class="col col-xl-6 col-lg-6 d-flex justify-content-center">
+               <!-- <div class="d-flex justify-content-start">  -->
+                <select class="form-select" name="kegg-pathways-select" id="kegg-pathways-select" style="width: 25ch; max-width: 100%;">
+                </select>
+                </div>
+
+                <div class="col col-xl-6 col-lg-6 d-flex justify-content-center">
+                    <input type="submit" name="submit" value="submit" class="btn btn__primary">
+                </div>
+            
+        </div>
+                <div class="mt-4 row">
+                    <div class="col col-xl-12 col-lg-12 d-flex justify-content-start">
+                        <label for="" class="mt-3">Differential expressed proteins in this pathway : </label>
+                        <div id="gene-color-div" class="p-2" style="display: flex;"></div>
+                    </div>
+                    <div class="col col-xl-12 col-lg-12 d-flex justify-content-center">
+                        <div class="string-scroll hidden" id="keggbodr"  style="border: 1px solid #6d5dfc;">
+                            <div class="wrapper1">
+                                <div class="m-2 d-flex justify-content-end">
+                                    <div class="form-inline">
+        
+        
+        
+                            <button type="button" id="kegg-Plt-Dl-Btn" class="btn btn-outline-primary mx-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+                            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                            </svg>
+                            .PNG</button>
+        
+                                    <a style="text-decoration: none;" href="">
+                                    <button type="button" class="btn btn-outline-success" id="">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-file-earmark-arrow-down" viewBox="0 0 16 16">
+                                        <path d="M8.5 6.5a.5.5 0 0 0-1 0v3.793L6.354 9.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 10.293V6.5z"/>
+                                        <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+                                        </svg>
+                                    Kegg Result(.csv)
+                                    </button>
+                                    </a>
+        
+                                    </div>
+                                </div>
+                              
+                                <div id = "pathway-map-div" class="allow-scroll pt-2 hidden">
+        
+                                </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                
+
+                 
+           
+           
+        </form>
+    </div>
+
+</section>
+
+
+<section id = "string-section" class="hidden">
+    <div class="container">
+    <hr align="center" width="100%" class="mb-5 mt-5">
+    <div class="row">
+        <div class="col col-xl-12 col-lg-12">
+            <div class="d-flex justify-content-center">
+            <h2 class="h2 heading"> String Protein-Protein Interaction </h2>
+            </div>
+        </div>
+    </div>
+
+        <div class="row mt-4">
+        <div class="col col-xl-12 col-lg-12">
+
+        <form id ="string-ajax">
+          {% csrf_token %}
+          <div class="d-flex justify-content-end">
+            <div style="display: flex; justify-content: space-between;">
+                    <label for="score-string" class="mx-3 mt-1"> <h6>Required score: </h6></label>
+                    <select class="form-select mx-3" name="score" id= "score-string">
+                       <option value="900">Highest confidence(0.900)</option>
+                       <option value="700">High confidence(0.700)</option>
+                       <option value="400" selected>Medium confidence(0.400)</option>
+                       <option value="150">Low confidence(0.150)</option>
+                    </select>
+                  <input type="submit" name="submit" class="btn btn__primary">
+            </div>
+        </div>
+            </form>
+
+        </div>
+        </div>
+
+        <div class="mt-3 row">
+            <div class="col col-xl-12 col-lg-12 d-flex justify-content-center">
+
+                <div class="string-scrolls hidden" id="strbodr" style="border: 1px solid #6d5dfc;">
+                    <div class="wrapper1">
+
+
+                            <div class="m-3 d-flex justify-content-end">
+                            <div class="mt-2 mb-4 form-inline">
+
+
+
+                    <button type="button" id="str-Plt-Dl-Btn" class="btn btn-outline-primary hidden mx-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                    <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                    </svg>
+                    .SVG</button>
+
+                            <a style="text-decoration: none;" href="{% url 'proteome:string_db_download' %}">
+                            <button type="button" class="btn btn-outline-success hidden" id="string-download-button">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-file-earmark-arrow-down" viewBox="0 0 16 16">
+                                <path d="M8.5 6.5a.5.5 0 0 0-1 0v3.793L6.354 9.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 10.293V6.5z"/>
+                                <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+                                </svg>
+                            String Result(.csv)
+                            </button>
+                            </a>
+
+                            </div>
+                        </div>
+
+
+         <div id="stringEmbedded" class="m-5 allow-scrolls d-flex justify-content-center" >
+             <!-- string output -->
+         </div>
+
+        </div>
+        </div>
+    </div>
+    </div>
+
+
+</div>
+</section>
+
+
+
+<div class="row">
+    <div class="col col-xl-12 col-lg-12">
+        <div class="m-5 d-flex justify-content-start">
+
+            <a class="download" href="{% url 'proteome:download_zip' %}" >
+                <button type="button" class="btn btn-lg btn-success"> <small>Download Plots and Results <b>(.ZIP)</b></small>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+                      <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                      <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                      </svg>
+                  </button>
+
+              </a>
+
+        </div>
+    </div>
+</div>
+</div>
+
+<div id ="reset-div" style="position:fixed ; top:20vh;left: 50vh; max-width: 90vh;" class="hidden">
+
+    <div class="my-5 container d-flex justify-content-center">
+        <div class="my-5">
+  
+            <div class="col col-xl-12 col-lg-12 shadow" style="background-color: white;border:1px inset #6d5dfc; border-radius: 10px;">
+            <div class="px-4 py-4">     
+
+                <div class="col col-xl-12 col-lg-12 d-flex justify-content-center">   
+
+    <form action="{% url 'proteome:pvalues' %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden"  id="ratio_or_lg" name="ratio_or_lg" value="{{ ratio_or_lg }}">
+    
+        <!-- <div class="form-inline mt-3 ms-3"> -->
+           
+            <div class="row d-flex justify-content-center">
+                <div class="d-flex justify-content-end "> <button class="btsn" id="close-reset"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                    <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                  </svg></button></div>
+                <div class="col col-xl-4 col-lg-4 d-flex justify-content-center">
+                    <label for="pvc" class="mt-3">P-Value Cut-off :</label>
+                    
+                </div>
+                <div class="col col-xl-5 col-lg-5 d-flex justify-content-start">
+                    <input class="form-control inp"  type="text" id = "pvc" name="pv_cutoff" value="{{ pv_cutoff }}">
+                </div>
+                <div class="col col-xl-3 col-lg-3"></div>
+                <div class="mt-4 col col-xl-6 col-lg-6 d-flex justify-content-center">
+                    <input class="form-check-input" type="radio" name = "ratiolg2" value="ratio" id="ratio">
+                    
+                    <label class="form-check-label" for="ratio">
+                    
+                    <b> Ratio </b>
+                        </label>
+
+                        <div id="fcvalueDiv" class="hidden">
+                        <div class=" form-inline">
+                            <br><label>Upregulated:</label><input class="input-sm ms-4" type = "text" name="fc_right" value= "{{ fc_right }}"
+                                style="width: 10ch; max-width: 100%;">
+                            </div>
+                            <div class="form-inline mt-1">
+                            <label>Downregulated:</label> <input class="input-sm" type = "text" name="fc_left" value = "{{ fc_left }}" style=" width: 10ch; max-width: 100%;">
+                        </div>
+                        </div>
+                </div>
+                <div class="mt-4 col col-xl-6 col-lg-6 d-flex justify-content-center">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name = "ratiolg2" value="lg2" id="lg2" >
+                        <label class="form-check-label" for="lg2">
+                        <b> Log2(Fold change)</b> 
+                        </label>
+                
+                            <div class="ml-3 hidden" id="logValueDiv">
+                            <br>&nbsp;&nbsp; <label>Cut-off&nbsp;&nbsp;<b>±</b>:</label><input class="input-sm ml-4" type = "text" name="lg2cut" value= "{{ lg2cut }}"
+                                style=" margin-left:1ch;  width: 10ch; max-width: 100%;">
+                            </div>
+                        </div>
+    
+            {% if control_to_select %}
+    
+                <label for="selected-control"> Select Control:</label>
+                <select class="form-select" name="selected-control" id="selected-control">
+                    {% for key, control in control_to_select.items %}
+                    <option value="{{ key }}">{{ control }}</option>
+                    {% endfor %}
+                </select>
+                {% endif %}
+                </div>
+            </div>
+            
+                    
+            
+            
+                <!-- </div> -->
+                
+        <input type="submit" id="resetbt" value="Reset" class="btn btn-lg btn__primary mx-12" style="margin-left: 10.5em;margin-top: 1.2em;">
+    </form>
+    </div>
+</div>    </div>
+</div></div></div>
+
+</div>
+</div>
+
+<div class="loading hidden" id="loading">
+    <div class="loading-1"></div>
+    <div class="loading-2"></div>
+    <div class="loading-3"></div>
+    <div class="loading-4"></div>
+  </div>
+
+</div>
+  <div class="dna" id="display" style="z-index: 1;display: none;">
+    <div class="ele"></div>
+    <div class="ele"></div>
+    <div class="ele"></div>
+    <div class="ele"></div>
+    <div class="ele"></div>
+    <div class="ele"></div>
+    <div class="ele"></div>
+    <div class="ele"></div>
+    <div class="ele"></div>
+    <div class="ele"></div>
+    <div class="ele"></div>
+    <div class="ele"></div>
+    <div class="ele"></div>
+    <div class="ele"></div>
+    <div class="ele"></div>
+    <div class="ele"></div>
+    <div class="ele"></div>
+    <div class="ele"></div>
+    <div class="ele"></div>
+    <div class="ele"></div>
+  </div>
+
+
+<script src="https://d3js.org/d3.v6.js"></script>
+<script type="text/javascript" src="https://string-db.org/javascript/combined_embedded_network_v2.0.4.js"></script>
+<script type="text/javascript">
+
+const heatMapForm = document.getElementById('heatmap-from');
+const heirarchyDiv = document.getElementById('heirarchial-plot-div');
+const elbowForm = document.getElementById('elbow-from');
+const kmeansDiv = document.getElementById('kmeansDiv');
+const downloadClusterButton = document.getElementById('download-cluster-button');
+const ratioLog = document.getElementById('ratio_or_lg').value;
+const ratioRadio = document.getElementById('ratio');
+const lg2Radio = document.getElementById('lg2');
+const logValueDiv = document.getElementById('logValueDiv');
+const fcvalueDiv = document.getElementById('fcvalueDiv');
+const test = document.getElementById('test');
+const geneBodr = document.getElementById('genebodr');
+
+const resetCutOff = document.getElementById("reset-cut-off");
+const resetDiv = document.getElementById("reset-div");
+const resetbt = document.getElementById('resetbt');
+const graphh = document.getElementById('loading');
+const back = document.getElementById('go-section');
+const volcanoSect = document.getElementById('volcano');
+const heatmapSection = document.getElementById('heatmap-section');
+const dnaloader = document.getElementById('display');
+
+const herachialHeading = document.getElementById("herachial-heading");
+const kmeanHeading = document.getElementById("kmean-heading");
+
+
+resetCutOff.addEventListener('click', function() {
+    resetDiv.classList.remove("hidden")
+    resetDiv.style.display = 'block';
+    test.classList.add("blur");  
+
+});
+resetbt.addEventListener("click",function(){
+    resetDiv.classList.add("hidden")
+    resetDiv.style.display = 'block';
+    test.classList.remove("blur"); 
+
+})
+
+
+$('input[type=radio][name=ratiolg2]').change(function() {
+    if (this.value == 'lg2') {
+        logValueDiv.classList.remove('hidden')
+        fcvalueDiv.classList.add('hidden')
+        
+
+    }
+    else if (this.value == 'ratio') {
+        fcvalueDiv.classList.remove('hidden')
+        logValueDiv.classList.add('hidden')
+
+    }
+});
+
+heatMapForm.addEventListener('submit', e=>{
+    e.preventDefault()
+    var mapType = document.getElementById("heatmapType").value;
+
+    console.log(mapType)
+
+    if (mapType == "k-Means")
+    {
+    
+    heirarchyDiv.classList.add('hidden');
+    kmeansDiv.classList.remove('hidden');
+    herachialHeading.classList.add("hidden");
+    kmeanHeading.classList.remove("hidden");
+    const csrf = document.getElementsByName('csrfmiddlewaretoken');
+    const fd = new FormData()
+    fd.append('csrfmiddlewaretoken', csrf[0].value)
+    graphh.style.display = 'block';
+    test.classList.add("blur");  
+
+
+    $.ajax({
+        type: 'POST',
+        url: "{% url 'proteome:kmeans' %}",
+        enctype: 'multipart/form-data',
+        data: fd,
+        success : function(data){
+
+        $('#elbowPlotDiv').html(`<img src="data:image/svg+xml;base64,${data.kmean}">`);
+            elbowForm.classList.remove('hidden');
+            graphh.style.display = 'none';
+            test.classList.remove("blur");
+
+            },
+
+        error: function(error){           
+
+            graphh.style.display = 'none';
+            test.classList.remove("blur");
+            alert('Oops Something went wrong !!');
+        },
+        cache: false,
+        contentType: false,
+        processData: false,
+        });
+    }
+
+    else
+    {
+        kmeansDiv.classList.add("hidden");
+        heirarchyDiv.classList.remove("hidden");
+        herachialHeading.classList.remove("hidden");
+        kmeanHeading.classList.add("hidden");
+
+    const csrf = document.getElementsByName('csrfmiddlewaretoken');
+    const fd = new FormData()
+    fd.append('csrfmiddlewaretoken', csrf[0].value)
+    graphh.style.display = 'block';
+    test.classList.add("blur");
+
+
+    $.ajax({
+        type: 'POST',
+        url: "{% url 'proteome:heirarchial_heatmap' %}",
+        enctype: 'multipart/form-data',
+        data: fd,
+        success : function(data){
+        $('#heirarchial-plot-div').html(`<img src="data:image/svg+xml;base64,${data.get_heatmap}">`);
+        graphh.style.display = 'none';
+        test.classList.remove("blur");
+
+
+            },
+
+        error: function(error){
+            console.log(error)
+            graphh.style.display = 'none';
+            test.classList.remove("blur"); 
+            alert('Oops Something went wrong !!');
+        },
+        cache: false,
+        contentType: false,
+        processData: false,
+        });
+
+    }
+
+});
+
+elbowForm.addEventListener('submit', e=>{
+    e.preventDefault()
+    var noOfCluster = document.getElementById('noOfCluster').value;
+    const clusterSelect = document.getElementById('cluster-select-go');
+    noOfCluster = Number(noOfCluster)
+    const csrf = document.getElementsByName('csrfmiddlewaretoken');
+    const fd = new FormData()
+    fd.append('csrfmiddlewaretoken', csrf[0].value)
+    fd.append('noOfCluster',noOfCluster)
+
+    graphh.style.display = 'block';
+    test.classList.add("blur");
+
+    $.ajax({
+        type: 'POST',
+        url: "{% url 'proteome:kClusterPlot' %}",
+        enctype: 'multipart/form-data',
+        data: fd,
+        success : function(data){
+        $('#kmean-plot-div').html(`<img src="data:image/svg+xml;base64,${data.kmap}">`);
+            downloadClusterButton.style.display = 'block';
+            graphh.style.display = 'none';
+            test.classList.remove("blur");
+            },
+
+            error: function(error){
+            console.log(error)
+            graphh.style.display = 'none';
+            heatmapSection.classList.remove("blur"); 
+            volcanoSect.classList.remove("blur"); 
+            back.classList.remove("blur"); 
+            alert('Oops Something went wrong !!');        
+        },
+        cache: false,
+        contentType: false,
+        processData: false,
+        });
+});
+
+
+const geneOntAjax = document.getElementById('gene-ont-ajax');
+const goDownloadBtn = document.getElementById('go-download-button');
+const pltDlBtn = document.getElementById('go-plot-dl-btn');
+const stringSection = document.getElementById('string-section');
+const geneSubmitBtn = document.getElementById('gene-submit');
+
+    geneOntAjax.addEventListener('submit', e=>{
+    e.preventDefault()
+
+    const species =  document.getElementById('species-for-go').value;
+    const pvcutOff = document.getElementById("p-v-cut-off").value;
+    const csrf = document.getElementsByName('csrfmiddlewaretoken');
+    const pathwaySelect = document.getElementById('kegg-pathways-select');
+
+    const fd = new FormData()
+    fd.append('csrfmiddlewaretoken', csrf[0].value)
+    fd.append('species',species)
+    fd.append('pvcutOff',pvcutOff)
+    dnaloader.style.display="block";
+    test.classList.add("blur");
+
+
+
+    $.ajax({
+
+        type: 'POST',
+        url: "{% url 'proteome:gene_ontology_ajax' %}",
+        enctype: 'multipart/form-data',
+        data: fd,
+
+        success: function(data){
+            $('#gene-ontology-plot').html(`<img src="data:image/svg+xml;base64,${data.circbar}">`);
+            dnaloader.style.display="none";
+            test.classList.remove("blur");
+
+            let pathwayList = JSON.parse(data.pathway_list);
+            pathwayList = pathwayList['name'];
+        
+            Object.keys(pathwayList).forEach(function(key) {
+
+                var opt = document.createElement('option');
+                opt.value = key;
+                opt.innerHTML = pathwayList[key];
+                pathwaySelect.appendChild(opt);
+                                });         
+            
+            pltDlBtn.classList.remove('hidden');
+            goDownloadBtn.classList.remove('hidden');
+            stringSection.classList.remove('hidden');
+            geneBodr.classList.remove('hidden');
+            
+            document.getElementById('kegg-section').classList.remove('hidden');
+
+        },
+
+        error: function(error){
+            stringSection.classList.remove('hidden');
+            console.log('error');
+            dnaloader.style.display = 'none';
+            test.classList.remove("blur");
+            alert('Oops Something went wrong !!'); 
+        },
+        cache: false,
+        contentType: false,
+        processData: false,
+        });
+
+});
+
+// string-string interaction API function
+
+var proteins = [];
+function send_request_to_string(scoreString, nodes_for_network) {
+
+            nodes_for_network.forEach(item => {
+                    proteins.push(item)
+                    });
+                    console.log(proteins)
+          getSTRING('https://string-db.org', {
+                          'species':'9606',
+                          'identifiers':proteins,
+                          'network_flavor':'confidence',
+                          'caller_identity': 'www.ciods.in',
+                          'required_score': scoreString,
+              });
+    }
+
+
+    // let counts=setInterval(updated,1);
+    //     let upto=0;
+    //     function updated(){
+    //         var count= document.getElementById("counter");
+    //         count.innerHTML=++upto;
+    //         if(upto >='{{ total_protiens }} ')
+    //         {
+    //             clearInterval(counts);
+    //         }
+    //     }
+
+        
+let coun=setInterval(lol,20);
+        let c=0;
+        function lol(){
+            var countt= document.getElementById("inc");
+            countt.innerHTML=++c;
+            if(c >='{{ total_up }} ')
+            {
+                clearInterval(coun);
+            }
+        }
+
+
+
+
+
+const scoreString = parseInt(document.getElementById('score-string').value);
+const stringAjax = document.getElementById("string-ajax");
+const stringDldBtn = document.getElementById("string-download-button");
+const keggPltBtn = document.getElementById('kegg-Plt-Dl-Btn');
+const strBodr = document.getElementById('strbodr');
+
+
+    stringAjax.addEventListener('submit', e=>{
+    e.preventDefault()
+    const csrf = document.getElementsByName('csrfmiddlewaretoken');
+    const fd = new FormData()
+    fd.append('csrfmiddlewaretoken', csrf[0].value)
+    fd.append('scoreString',scoreString)
+    dnaloader.style.display="block";
+    test.classList.add("blur");
+
+    $.ajax({
+        type: 'POST',
+        url: "{% url 'proteome:string_ajax' %}",
+        enctype: 'multipart/form-data',
+        data: fd,
+        success : function(data){
+            send_request_to_string(scoreString, data.for_string);
+              stringDldBtn.classList.remove("hidden");
+              strPltDlBtn.classList.remove("hidden");
+              dnaloader.style.display="none";
+              test.classList.remove("blur");
+              strBodr.classList.remove('hidden');
+
+            },
+
+        error: function(error){
+            console.log('errrorooroo')
+            dnaloader.style.display = 'none';
+            test.classList.remove("blur");
+            alert('Oops Something went wrong !!'); 
+        },
+        cache: false,
+        contentType: false,
+        processData: false,
+        });
+   });
+
+
+const keggAjax = document.getElementById('pathway-form');
+const strPltDlBtn = document.getElementById('str-Plt-Dl-Btn');
+const keggBodr = document.getElementById('keggbodr');
+geneColorDiv = document.getElementById('gene-color-div'); 
+keggAjax.addEventListener('submit', e=>{
+    e.preventDefault()
+    const csrf = document.getElementsByName('csrfmiddlewaretoken');
+    var selectedPathway = document.getElementById("kegg-pathways-select").value;
+
+    const fd = new FormData()
+    fd.append('csrfmiddlewaretoken', csrf[0].value)
+    fd.append('selectedPathway',selectedPathway)
+    dnaloader.style.display="block";
+    test.classList.add("blur");
+
+
+    $.ajax({
+        type: 'POST',
+        url: "{% url 'proteome:kegg_pathway' %}",
+        enctype: 'multipart/form-data',
+        data: fd,
+        success : function(data){
+
+            document.getElementById("pathway-map-div").classList.remove('hidden');
+            $('#pathway-map-div').html(`<img src="data:image/png;base64,${data.pathway_image}">`);
+            dnaloader.style.display="none";
+            test.classList.remove("blur");
+            keggBodr.classList.remove('hidden');
+            keggPltBtn.classList.remove("hidden");
+            
+            if (geneColorDiv.hasChildNodes()){
+                geneColorDiv.innerHTML = '';
+             }
+        
+            let colorList = JSON.parse(data.gene_color);
+            colorList = colorList['color'];
+                Object.keys(colorList).forEach(function(key) {
+                var para = document.createElement("p");
+                var node = document.createTextNode(key);
+                para.appendChild(node);
+                para.style.color = colorList[key];
+                para.style.padding = "6px";                
+                geneColorDiv.appendChild(para);
+            
+
+            });      
+        
+            },
+        error: function(error){
+            console.log('errror')
+            dnaloader.style.display = 'none';
+            test.classList.remove("blur");
+            alert('Oops Something went wrong !!'); 
+        },
+        cache: false,
+        contentType: false,
+        processData: false,
+        });
+   });
+   
+const selectEl = document.getElementById('species-for-go');
+const newDivEl = document.getElementById('tohide');
+
+selectEl.addEventListener('change', (event) => {
+  const selectedOption = event.target.value;
+  
+  if (selectedOption === 'other') {
+   newDivEl.classList.remove('hidden');
+  }
+  else{
+    newDivEl.classList.add('hidden');
+  }
+});
+
+
+function autocomplete(inp, arr) {
+  /*the autocomplete function takes two arguments,
+  the text field element and an array of possible autocompleted values:*/
+  var currentFocus;
+  /*execute a function when someone writes in the text field:*/
+  inp.addEventListener("input", function(e) {
+      var a, b, i, val = this.value;
+      /*close any already open lists of autocompleted values*/
+      closeAllLists();
+      if (!val) { return false;}
+      currentFocus = -1;
+      /*create a DIV element that will contain the items (values):*/
+      a = document.createElement("DIV");
+      a.setAttribute("id", this.id + "autocomplete-list");
+      a.setAttribute("class", "autocomplete-items");
+      /*append the DIV element as a child of the autocomplete container:*/
+      this.parentNode.appendChild(a);
+      /*for each item in the array...*/
+      for (i = 0; i < arr.length; i++) {
+        /*check if the item starts with the same letters as the text field value:*/
+        if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+          /*create a DIV element for each matching element:*/
+          b = document.createElement("DIV");
+          /*make the matching letters bold:*/
+          b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+          b.innerHTML += arr[i].substr(val.length);
+          /*insert a input field that will hold the current array item's value:*/
+          b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+          /*execute a function when someone clicks on the item value (DIV element):*/
+          b.addEventListener("click", function(e) {
+              /*insert the value for the autocomplete text field:*/
+              inp.value = this.getElementsByTagName("input")[0].value;
+              /*close the list of autocompleted values,
+              (or any other open lists of autocompleted values:*/
+              closeAllLists();
+          });
+          a.appendChild(b);
+        }
+      }
+  });
+  /*execute a function presses a key on the keyboard:*/
+  inp.addEventListener("keydown", function(e) {
+      var x = document.getElementById(this.id + "autocomplete-list");
+      if (x) x = x.getElementsByTagName("div");
+      if (e.keyCode == 40) {
+        /*If the arrow DOWN key is pressed,
+        increase the currentFocus variable:*/
+        currentFocus++;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 38) { //up
+        /*If the arrow UP key is pressed,
+        decrease the currentFocus variable:*/
+        currentFocus--;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 13) {
+        /*If the ENTER key is pressed, prevent the form from being submitted,*/
+        e.preventDefault();
+        if (currentFocus > -1) {
+          /*and simulate a click on the "active" item:*/
+          if (x) x[currentFocus].click();
+        }
+      }
+  });
+  function addActive(x) {
+    /*a function to classify an item as "active":*/
+    if (!x) return false;
+    /*start by removing the "active" class on all items:*/
+    removeActive(x);
+    if (currentFocus >= x.length) currentFocus = 0;
+    if (currentFocus < 0) currentFocus = (x.length - 1);
+    /*add class "autocomplete-active":*/
+    x[currentFocus].classList.add("autocomplete-active");
+  }
+  function removeActive(x) {
+    /*a function to remove the "active" class from all autocomplete items:*/
+    for (var i = 0; i < x.length; i++) {
+      x[i].classList.remove("autocomplete-active");
+    }
+  }
+  function closeAllLists(elmnt) {
+    /*close all autocomplete lists in the document,
+    except the one passed as an argument:*/
+    var x = document.getElementsByClassName("autocomplete-items");
+    for (var i = 0; i < x.length; i++) {
+      if (elmnt != x[i] && elmnt != inp) {
+        x[i].parentNode.removeChild(x[i]);
+      }
+    }
+  }
+  /*execute a function when someone clicks in the document:*/
+  document.addEventListener("click", function (e) {
+      closeAllLists(e.target);
+  });
+}
+var species = ["Coturnix japonica","Sus scrofa","Vicugna pacos","Cercocebus atys","Monodon monoceros","Leptobrachium leishanense","Seriola dumerili","Panthera leo","Macaca nemestrina","Gallus gallus","Equus caballus","Ursus maritimus","Haplochromis burtoni","Dipodomys ordii","Sus scrofa","Astatotilapia calliptera","Oryzias melastigma","Choloepus hoffmanni","Panthera tigris altaica","Maylandia zebra","Cricetulus griseus","Jaculus jaculus","Bos mutus","Ornithorhynchus anatinus","Cyprinodon variegatus","Bos taurus","Gadus morhua","Nannospalax galili","Gopherus evgoodei","Canis lupus familiaris","Scleropages formosus","Astyanax mexicanus","Mandrillus leucophaeus","Loxodonta africana","Octodon degus","Rhinolophus ferrumequinum","Sus scrofa","Latimeria chalumnae","Naja naja","Amphiprion percula","Sus scrofa","Mus caroli","Poecilia formosa","Felis catus","Otolemur garnettii","Ictalurus punctatus","Anas platyrhynchos platyrhynchos","Dicentrarchus labrax","Notechis scutatus","Clupea harengus","Fundulus heteroclitus","Meleagris gallopavo","Bos grunniens","Physeter catodon","Monodelphis domestica","Gorilla gorilla gorilla","Myripristis murdjan","Saccharomyces cerevisiae S288C","Esox lucius","Laticauda laticaudata","Lates calcarifer","Pygocentrus nattereri","Ursus americanus","Sarcophilus harrisii"]
+autocomplete(document.getElementById("myInput"), species);
+
+const closeBtnReset = document.getElementById('close-reset');
+closeBtnReset.addEventListener('click', function(){
+    resetDiv.classList.add("hidden")
+    resetDiv.style.display = 'none';
+    test.classList.remove("blur");  
+
+})
+
+
+
+</script>
+
+
+{% endblock %}
